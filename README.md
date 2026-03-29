@@ -28,7 +28,7 @@ Given one or more **gene targets** and **diseases**, this tool:
 
 ```bash
 # Clone or download this project
-git clone <your-repo-url> target-validation-tool
+git clone https://github.com/romainstuder/target-ai target-validation-tool
 cd target-validation-tool
 
 # Start Claude Code
@@ -37,33 +37,33 @@ claude
 
 That's it. Claude Code reads the `CLAUDE.md` file on startup and becomes your target validation assistant.
 
-### Usage — Slash Commands
+### Usage — Commands
 
-Once inside Claude Code, use these custom commands:
+Once inside Claude Code, use these commands:
 
-#### `/validate` — Multi-target × multi-disease scoring
+#### `validate` — Multi-target × multi-disease scoring
 ```
-/validate BRAF,KRAS — melanoma,lung cancer
-/validate PCSK9,HMGCR,ANGPTL3 — cardiovascular disease
-/validate CDK4,CDK6 — breast cancer, ovarian cancer
-```
-
-#### `/score-target` — Deep-dive on a single target
-```
-/score-target PCSK9 — cardiovascular disease, familial hypercholesterolemia
-/score-target EGFR — non-small cell lung cancer
+validate BRAF,KRAS — melanoma,lung cancer
+validate PCSK9,HMGCR,ANGPTL3 — cardiovascular disease
+validate CDK4,CDK6 — breast cancer, ovarian cancer
 ```
 
-#### `/compare-targets` — Head-to-head comparison for one disease
+#### `score-target` — Deep-dive on a single target
 ```
-/compare-targets EGFR,HER2,HER3,MET — non-small cell lung cancer
-/compare-targets JAK1,JAK2,JAK3,TYK2 — rheumatoid arthritis
+score-target PCSK9 — cardiovascular disease, familial hypercholesterolemia
+score-target EGFR — non-small cell lung cancer
 ```
 
-#### `/find-targets` — Discover top targets for a disease
+#### `compare-targets` — Head-to-head comparison for one disease
 ```
-/find-targets Alzheimer's disease
-/find-targets Crohn's disease --top 20
+compare-targets EGFR,HER2,HER3,MET — non-small cell lung cancer
+compare-targets JAK1,JAK2,JAK3,TYK2 — rheumatoid arthritis
+```
+
+#### `find-targets` — Discover top targets for a disease
+```
+find-targets Alzheimer's disease
+find-targets Crohn's disease --top 20
 ```
 
 ### Usage — Natural Language
@@ -141,10 +141,10 @@ target-validation-tool/
 ├── report_template.html               # HTML template (data injected by Python)
 ├── .claude/
 │   └── skills/
-│       ├── validate/SKILL.md          # /validate skill
-│       ├── score-target/SKILL.md      # /score-target skill
-│       ├── compare-targets/SKILL.md   # /compare-targets skill
-│       └── find-targets/SKILL.md      # /find-targets skill
+│       ├── validate/SKILL.md          # validate skill
+│       ├── score-target/SKILL.md      # score-target skill
+│       ├── compare-targets/SKILL.md   # compare-targets skill
+│       └── find-targets/SKILL.md      # find-targets skill
 └── results/                           # Generated outputs
     ├── validation_melanoma.html       #   ★ Interactive HTML (primary deliverable)
     ├── validation_report.md
@@ -152,10 +152,9 @@ target-validation-tool/
     └── raw_data.json
 ```
 
-> **Note:** This project uses the `.claude/skills/<name>/SKILL.md` format (recommended for
-> Claude Code v2.x+). The older `.claude/commands/*.md` format is deprecated and may not
-> be detected reliably. Each SKILL.md has YAML frontmatter with `name` and `description`
-> fields that Claude Code uses for slash-command registration and auto-invocation.
+> **Note:** Commands are defined in both `.claude/skills/` and `.claude/commands/` for
+> compatibility across Claude Code versions. You can also just type naturally —
+> `CLAUDE.md` is always loaded and Claude will run the right Python command.
 
 ## Customization
 
