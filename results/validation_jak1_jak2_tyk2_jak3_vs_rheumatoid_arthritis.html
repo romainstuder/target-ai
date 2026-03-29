@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Target Validation — septic shock</title>
+<title>Target Validation — rheumatoid arthritis</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -95,7 +95,7 @@
 <body>
 <div class="container">
   <h1>Target Validation Scoring Matrix</h1>
-  <p class="subtitle">2 targets scored against septic shock across 7 evidence sub-dimensions. Scores 0-5 per dimension. Weighted composite determines ranking. Safety score of 0 = veto. Hover scores for details. Click target names for notes.</p>
+  <p class="subtitle">4 target(s) (JAK1, JAK2, TYK2, JAK3) scored against 1 disease(s) (rheumatoid arthritis) across 7 evidence sub-dimensions. Scores 0-5 per dimension. Weighted composite determines ranking. Safety score of 0 = veto. Hover scores for details. Click target names for notes.</p>
 
   <div class="matrix-wrap">
     <table id="matrix">
@@ -128,12 +128,12 @@
     </div>
   </div>
 
-  <div class="generated">Generated 2026-03-27 18:07 · Data: Open Targets Platform GraphQL API</div>
+  <div class="generated">Generated 2026-03-29 22:04 · Data: Open Targets Platform GraphQL API</div>
 </div>
 
 <script>
 // ── DATA (injected by open_targets_client.py) ────────────────────────────
-const DISEASE_NAME = "septic shock";
+const DISEASE_NAME = "rheumatoid arthritis";
 
 const DIMENSIONS = [
   { key: "genetic",           label: "Genetic Association",  group: "clinical",     weight: 0, isVeto: false, descriptions: ["No GWAS or rare-variant signal","Suggestive association","Significant GWAS hit (p<5e-8)","GWAS + rare-variant convergence","Strong colocalisation confirmed","Protective LoF + Mendelian evidence"] },
@@ -151,43 +151,113 @@ const DIMENSIONS = [
 
 const TARGETS = [
   {
-    "name": "IRAK4",
-    "fullName": "interleukin 1 receptor associated kinase 4",
-    "ensemblId": "ENSG00000198001",
-    "context": "Serine/threonine-protein kinase that plays a critical role in initiating innate ",
+    "name": "JAK1",
+    "fullName": "Janus kinase 1",
+    "ensemblId": "ENSG00000162434",
+    "disease": "rheumatoid arthritis",
+    "context": "Tyrosine kinase of the non-receptor type, involved in the IFN-alpha/beta/gamma s",
     "scores": {
-      "genetic": 0,
-      "trials": 0,
-      "clinical_total": 0,
+      "genetic": 4,
+      "trials": 4,
+      "clinical_total": 4,
       "sm_tractability": 3,
       "ab_tractability": 2,
       "druggability_total": 3,
-      "pathways": 4,
-      "expression": 3,
-      "literature": 4,
-      "pathway_total": 4,
-      "safety": 5
+      "pathways": 5,
+      "expression": 4,
+      "literature": 5,
+      "pathway_total": 5,
+      "safety": 1
     },
     "reasons": {
-      "genetic": "No clinical or genetic evidence found",
-      "trials": "No clinical or genetic evidence found",
-      "clinical_total": "No clinical or genetic evidence found",
-      "sm_tractability": "SM: Advanced Clinical; SM: Structure with Ligand; SM: High-Quality Ligand; SM: High-Quality Pocket; SM: Druggable Family; AB: GO CC high conf",
-      "ab_tractability": "SM: Advanced Clinical; SM: Structure with Ligand; SM: High-Quality Ligand; SM: High-Quality Pocket; SM: Druggable Family; AB: GO CC high conf",
-      "druggability_total": "SM: Advanced Clinical; SM: Structure with Ligand; SM: High-Quality Ligand; SM: High-Quality Pocket; SM: Druggable Family; AB: GO CC high conf",
-      "pathways": "10 pathway(s): IRAK4 deficiency (TLR5), PI5P, PP2A and IER3 Regulate PI3K/AKT Signaling, TRAF6 mediated induction of NFkB and MAP kinases upon TLR7/8 or 9 activation; Function: Serine/threonine-protein kinase that plays a critical role in initiating innate ...; Location: Cytoplasm, Cytosol, Microtubules",
-      "expression": "10 pathway(s): IRAK4 deficiency (TLR5), PI5P, PP2A and IER3 Regulate PI3K/AKT Signaling, TRAF6 mediated induction of NFkB and MAP kinases upon TLR7/8 or 9 activation; Function: Serine/threonine-protein kinase that plays a critical role in initiating innate ...; Location: Cytoplasm, Cytosol, Microtubules",
-      "literature": "10 pathway(s): IRAK4 deficiency (TLR5), PI5P, PP2A and IER3 Regulate PI3K/AKT Signaling, TRAF6 mediated induction of NFkB and MAP kinases upon TLR7/8 or 9 activation; Function: Serine/threonine-protein kinase that plays a critical role in initiating innate ...; Location: Cytoplasm, Cytosol, Microtubules",
-      "pathway_total": "10 pathway(s): IRAK4 deficiency (TLR5), PI5P, PP2A and IER3 Regulate PI3K/AKT Signaling, TRAF6 mediated induction of NFkB and MAP kinases upon TLR7/8 or 9 activation; Function: Serine/threonine-protein kinase that plays a critical role in initiating innate ...; Location: Cytoplasm, Cytosol, Microtubules",
-      "safety": "No safety liabilities reported"
+      "genetic": "Genetic score (genetic_association): 0.53",
+      "trials": "Genetic score (genetic_association): 0.53",
+      "clinical_total": "Genetic score (genetic_association): 0.53",
+      "sm_tractability": "SM(4): Approved Drug, Structure with Ligand; AB(2): GO CC high conf, UniProt loc med conf",
+      "ab_tractability": "SM(4): Approved Drug, Structure with Ligand; AB(2): GO CC high conf, UniProt loc med conf",
+      "druggability_total": "SM(4): Approved Drug, Structure with Ligand; AB(2): GO CC high conf, UniProt loc med conf",
+      "pathways": "30 pw: Interleukin-35 Signalling; Interleukin-10 signaling; Literature: 0.38",
+      "expression": "30 pw: Interleukin-35 Signalling; Interleukin-10 signaling; Literature: 0.38",
+      "literature": "30 pw: Interleukin-35 Signalling; Interleukin-10 signaling; Literature: 0.38",
+      "pathway_total": "30 pw: Interleukin-35 Signalling; Interleukin-10 signaling; Literature: 0.38",
+      "safety": "High LoF intolerance (pLI-like score=1.00)"
     },
-    "notes": "Clinical: No clinical or genetic evidence found. Druggability: SM: Advanced Clinical; SM: Structure with Ligand; SM: High-Quality Ligand; SM: High-Quality Pocket; SM: Druggable Family; AB: GO CC high conf. Pathway: 10 pathway(s): IRAK4 deficiency (TLR5), PI5P, PP2A and IER3 Regulate PI3K/AKT Signaling, TRAF6 mediated induction of NFkB and MAP kinases upon TLR7/8 or 9 activation; Function: Serine/threonine-protein kinase that plays a critical role in initiating innate ...; Location: Cytoplasm, Cytosol, Microtubules."
+    "notes": "Clinical: Genetic score (genetic_association): 0.53. Druggability: SM(4): Approved Drug, Structure with Ligand; AB(2): GO CC high conf, UniProt loc med conf. Pathway: 30 pw: Interleukin-35 Signalling; Interleukin-10 signaling; Literature: 0.38."
   },
   {
-    "name": "RIPK3",
-    "fullName": "receptor interacting serine/threonine kinase 3",
-    "ensemblId": "ENSG00000129465",
-    "context": "Serine/threonine-protein kinase that activates necroptosis and apoptosis, two pa",
+    "name": "JAK2",
+    "fullName": "Janus kinase 2",
+    "ensemblId": "ENSG00000096968",
+    "disease": "rheumatoid arthritis",
+    "context": "Non-receptor tyrosine kinase involved in various processes such as cell growth, ",
+    "scores": {
+      "genetic": 4,
+      "trials": 4,
+      "clinical_total": 4,
+      "sm_tractability": 3,
+      "ab_tractability": 2,
+      "druggability_total": 3,
+      "pathways": 5,
+      "expression": 4,
+      "literature": 5,
+      "pathway_total": 5,
+      "safety": 5
+    },
+    "reasons": {
+      "genetic": "Genetic score (genetic_association): 0.54",
+      "trials": "Genetic score (genetic_association): 0.54",
+      "clinical_total": "Genetic score (genetic_association): 0.54",
+      "sm_tractability": "SM(5): Approved Drug, Structure with Ligand; AB(2): GO CC high conf, UniProt loc med conf",
+      "ab_tractability": "SM(5): Approved Drug, Structure with Ligand; AB(2): GO CC high conf, UniProt loc med conf",
+      "druggability_total": "SM(5): Approved Drug, Structure with Ligand; AB(2): GO CC high conf, UniProt loc med conf",
+      "pathways": "38 pw: Signaling by SCF-KIT; Interleukin-35 Signalling; Literature: 0.45",
+      "expression": "38 pw: Signaling by SCF-KIT; Interleukin-35 Signalling; Literature: 0.45",
+      "literature": "38 pw: Signaling by SCF-KIT; Interleukin-35 Signalling; Literature: 0.45",
+      "pathway_total": "38 pw: Signaling by SCF-KIT; Interleukin-35 Signalling; Literature: 0.45",
+      "safety": "No safety liabilities reported"
+    },
+    "notes": "Clinical: Genetic score (genetic_association): 0.54. Druggability: SM(5): Approved Drug, Structure with Ligand; AB(2): GO CC high conf, UniProt loc med conf. Pathway: 38 pw: Signaling by SCF-KIT; Interleukin-35 Signalling; Literature: 0.45."
+  },
+  {
+    "name": "TYK2",
+    "fullName": "tyrosine kinase 2",
+    "ensemblId": "ENSG00000105397",
+    "disease": "rheumatoid arthritis",
+    "context": "Tyrosine kinase of the non-receptor type involved in numerous cytokines and inte",
+    "scores": {
+      "genetic": 4,
+      "trials": 4,
+      "clinical_total": 4,
+      "sm_tractability": 3,
+      "ab_tractability": 2,
+      "druggability_total": 3,
+      "pathways": 5,
+      "expression": 4,
+      "literature": 5,
+      "pathway_total": 5,
+      "safety": 5
+    },
+    "reasons": {
+      "genetic": "Genetic score (genetic_association): 0.92",
+      "trials": "Genetic score (genetic_association): 0.92",
+      "clinical_total": "Genetic score (genetic_association): 0.92",
+      "sm_tractability": "SM(5): Approved Drug, Structure with Ligand; AB(1): GO CC high conf",
+      "ab_tractability": "SM(5): Approved Drug, Structure with Ligand; AB(1): GO CC high conf",
+      "druggability_total": "SM(5): Approved Drug, Structure with Ligand; AB(1): GO CC high conf",
+      "pathways": "20 pw: Interleukin-35 Signalling; Interleukin-10 signaling; Literature: 0.78",
+      "expression": "20 pw: Interleukin-35 Signalling; Interleukin-10 signaling; Literature: 0.78",
+      "literature": "20 pw: Interleukin-35 Signalling; Interleukin-10 signaling; Literature: 0.78",
+      "pathway_total": "20 pw: Interleukin-35 Signalling; Interleukin-10 signaling; Literature: 0.78",
+      "safety": "No safety liabilities reported"
+    },
+    "notes": "Clinical: Genetic score (genetic_association): 0.92. Druggability: SM(5): Approved Drug, Structure with Ligand; AB(1): GO CC high conf. Pathway: 20 pw: Interleukin-35 Signalling; Interleukin-10 signaling; Literature: 0.78."
+  },
+  {
+    "name": "JAK3",
+    "fullName": "Janus kinase 3",
+    "ensemblId": "ENSG00000105639",
+    "disease": "rheumatoid arthritis",
+    "context": "Non-receptor tyrosine kinase involved in various processes such as cell growth, ",
     "scores": {
       "genetic": 0,
       "trials": 0,
@@ -195,26 +265,26 @@ const TARGETS = [
       "sm_tractability": 3,
       "ab_tractability": 2,
       "druggability_total": 3,
-      "pathways": 4,
-      "expression": 3,
-      "literature": 4,
-      "pathway_total": 4,
+      "pathways": 5,
+      "expression": 4,
+      "literature": 5,
+      "pathway_total": 5,
       "safety": 5
     },
     "reasons": {
       "genetic": "No clinical or genetic evidence found",
       "trials": "No clinical or genetic evidence found",
       "clinical_total": "No clinical or genetic evidence found",
-      "sm_tractability": "SM: Structure with Ligand; SM: High-Quality Ligand; SM: Druggable Family",
-      "ab_tractability": "SM: Structure with Ligand; SM: High-Quality Ligand; SM: Druggable Family",
-      "druggability_total": "SM: Structure with Ligand; SM: High-Quality Ligand; SM: Druggable Family",
-      "pathways": "11 pathway(s): TLR3-mediated TICAM1-dependent programmed cell death, SARS-CoV-1 activates/modulates innate immune responses, TRIF-mediated programmed cell death; Function: Serine/threonine-protein kinase that activates necroptosis and apoptosis, two pa...; Location: Cytoplasm, Nucleus; Literature: 0.08",
-      "expression": "11 pathway(s): TLR3-mediated TICAM1-dependent programmed cell death, SARS-CoV-1 activates/modulates innate immune responses, TRIF-mediated programmed cell death; Function: Serine/threonine-protein kinase that activates necroptosis and apoptosis, two pa...; Location: Cytoplasm, Nucleus; Literature: 0.08",
-      "literature": "11 pathway(s): TLR3-mediated TICAM1-dependent programmed cell death, SARS-CoV-1 activates/modulates innate immune responses, TRIF-mediated programmed cell death; Function: Serine/threonine-protein kinase that activates necroptosis and apoptosis, two pa...; Location: Cytoplasm, Nucleus; Literature: 0.08",
-      "pathway_total": "11 pathway(s): TLR3-mediated TICAM1-dependent programmed cell death, SARS-CoV-1 activates/modulates innate immune responses, TRIF-mediated programmed cell death; Function: Serine/threonine-protein kinase that activates necroptosis and apoptosis, two pa...; Location: Cytoplasm, Nucleus; Literature: 0.08",
+      "sm_tractability": "SM(5): Approved Drug, Structure with Ligand; AB(3): GO CC high conf, UniProt loc med conf",
+      "ab_tractability": "SM(5): Approved Drug, Structure with Ligand; AB(3): GO CC high conf, UniProt loc med conf",
+      "druggability_total": "SM(5): Approved Drug, Structure with Ligand; AB(3): GO CC high conf, UniProt loc med conf",
+      "pathways": "11 pw: Interleukin-21 signaling; Signaling by ALK; Literature: 0.34",
+      "expression": "11 pw: Interleukin-21 signaling; Signaling by ALK; Literature: 0.34",
+      "literature": "11 pw: Interleukin-21 signaling; Signaling by ALK; Literature: 0.34",
+      "pathway_total": "11 pw: Interleukin-21 signaling; Signaling by ALK; Literature: 0.34",
       "safety": "No safety liabilities reported"
     },
-    "notes": "Clinical: No clinical or genetic evidence found. Druggability: SM: Structure with Ligand; SM: High-Quality Ligand; SM: Druggable Family. Pathway: 11 pathway(s): TLR3-mediated TICAM1-dependent programmed cell death, SARS-CoV-1 activates/modulates innate immune responses, TRIF-mediated programmed cell death; Function: Serine/threonine-protein kinase that activates necroptosis and apoptosis, two pa...; Location: Cytoplasm, Nucleus; Literature: 0.08."
+    "notes": "Clinical: No clinical or genetic evidence found. Druggability: SM(5): Approved Drug, Structure with Ligand; AB(3): GO CC high conf, UniProt loc med conf. Pathway: 11 pw: Interleukin-21 signaling; Signaling by ALK; Literature: 0.34."
   }
 ];
 
@@ -255,7 +325,7 @@ function render() {
   ranked.forEach((t, i) => {
     const th = document.createElement("th");
     th.className = "target-head" + (t.vetoed ? " vetoed" : "") + (selectedTarget === i ? " selected" : "");
-    th.innerHTML = `<div class="target-name">${t.name}</div><div class="target-context">${(t.context || "").slice(0, 55)}${(t.context || "").length > 55 ? "…" : ""}</div>`;
+    th.innerHTML = `<div class="target-name">${t.name}</div><div class="target-context">${t.disease || ""}</div>`;
     th.onclick = () => { selectedTarget = selectedTarget === i ? null : i; render(); };
     headerRow.appendChild(th);
   });

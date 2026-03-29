@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Target Validation — cardiovascular disease</title>
+<title>Target Validation — breast carcinoma, ovarian carcinoma</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -95,7 +95,7 @@
 <body>
 <div class="container">
   <h1>Target Validation Scoring Matrix</h1>
-  <p class="subtitle">1 targets scored against cardiovascular disease across 7 evidence sub-dimensions. Scores 0-5 per dimension. Weighted composite determines ranking. Safety score of 0 = veto. Hover scores for details. Click target names for notes.</p>
+  <p class="subtitle">2 target(s) (CDK4, CDK6) scored against 2 disease(s) (breast carcinoma, ovarian carcinoma) across 7 evidence sub-dimensions. Scores 0-5 per dimension. Weighted composite determines ranking. Safety score of 0 = veto. Hover scores for details. Click target names for notes.</p>
 
   <div class="matrix-wrap">
     <table id="matrix">
@@ -128,12 +128,12 @@
     </div>
   </div>
 
-  <div class="generated">Generated 2026-03-27 14:58 · Data: Open Targets Platform GraphQL API</div>
+  <div class="generated">Generated 2026-03-29 21:59 · Data: Open Targets Platform GraphQL API</div>
 </div>
 
 <script>
 // ── DATA (injected by open_targets_client.py) ────────────────────────────
-const DISEASE_NAME = "cardiovascular disease";
+const DISEASE_NAME = "breast carcinoma, ovarian carcinoma";
 
 const DIMENSIONS = [
   { key: "genetic",           label: "Genetic Association",  group: "clinical",     weight: 0, isVeto: false, descriptions: ["No GWAS or rare-variant signal","Suggestive association","Significant GWAS hit (p<5e-8)","GWAS + rare-variant convergence","Strong colocalisation confirmed","Protective LoF + Mendelian evidence"] },
@@ -151,37 +151,140 @@ const DIMENSIONS = [
 
 const TARGETS = [
   {
-    "name": "PCSK9",
-    "fullName": "",
-    "ensemblId": "ENSG00000169174",
-    "context": "",
+    "name": "CDK4",
+    "fullName": "cyclin dependent kinase 4",
+    "ensemblId": "ENSG00000135446",
+    "disease": "breast carcinoma",
+    "context": "Ser/Thr-kinase component of cyclin D-CDK4 (DC) complexes that phosphorylate and ",
     "scores": {
-      "genetic": 0,
-      "trials": 0,
-      "clinical_total": 0,
-      "sm_tractability": 0,
-      "ab_tractability": 0,
-      "druggability_total": 0,
-      "pathways": 0,
-      "expression": 0,
-      "literature": 0,
-      "pathway_total": 0,
+      "genetic": 4,
+      "trials": 4,
+      "clinical_total": 4,
+      "sm_tractability": 3,
+      "ab_tractability": 2,
+      "druggability_total": 3,
+      "pathways": 5,
+      "expression": 4,
+      "literature": 5,
+      "pathway_total": 5,
       "safety": 5
     },
     "reasons": {
-      "genetic": "No clinical or genetic evidence found",
-      "trials": "No clinical or genetic evidence found",
-      "clinical_total": "No clinical or genetic evidence found",
-      "sm_tractability": "No tractability or drug data",
-      "ab_tractability": "No tractability or drug data",
-      "druggability_total": "No tractability or drug data",
-      "pathways": "No pathway or expression data",
-      "expression": "No pathway or expression data",
-      "literature": "No pathway or expression data",
-      "pathway_total": "No pathway or expression data",
+      "genetic": "Genetic score (genetic_association): 0.00; Genetic score (somatic_mutation): 0.63",
+      "trials": "Genetic score (genetic_association): 0.00; Genetic score (somatic_mutation): 0.63",
+      "clinical_total": "Genetic score (genetic_association): 0.00; Genetic score (somatic_mutation): 0.63",
+      "sm_tractability": "SM(5): Approved Drug, Structure with Ligand",
+      "ab_tractability": "SM(5): Approved Drug, Structure with Ligand",
+      "druggability_total": "SM(5): Approved Drug, Structure with Ligand",
+      "pathways": "19 pw: Transcriptional regulation of white adip; Evasion of Oncogene Induced Senescence D; Literature: 0.94",
+      "expression": "19 pw: Transcriptional regulation of white adip; Evasion of Oncogene Induced Senescence D; Literature: 0.94",
+      "literature": "19 pw: Transcriptional regulation of white adip; Evasion of Oncogene Induced Senescence D; Literature: 0.94",
+      "pathway_total": "19 pw: Transcriptional regulation of white adip; Evasion of Oncogene Induced Senescence D; Literature: 0.94",
       "safety": "No safety liabilities reported"
     },
-    "notes": "Clinical: No clinical or genetic evidence found. Druggability: No tractability or drug data. Pathway: No pathway or expression data."
+    "notes": "Clinical: Genetic score (genetic_association): 0.00; Genetic score (somatic_mutation): 0.63. Druggability: SM(5): Approved Drug, Structure with Ligand. Pathway: 19 pw: Transcriptional regulation of white adip; Evasion of Oncogene Induced Senescence D; Literature: 0.94."
+  },
+  {
+    "name": "CDK4",
+    "fullName": "cyclin dependent kinase 4",
+    "ensemblId": "ENSG00000135446",
+    "disease": "ovarian carcinoma",
+    "context": "Ser/Thr-kinase component of cyclin D-CDK4 (DC) complexes that phosphorylate and ",
+    "scores": {
+      "genetic": 4,
+      "trials": 4,
+      "clinical_total": 4,
+      "sm_tractability": 3,
+      "ab_tractability": 2,
+      "druggability_total": 3,
+      "pathways": 4,
+      "expression": 3,
+      "literature": 4,
+      "pathway_total": 4,
+      "safety": 5
+    },
+    "reasons": {
+      "genetic": "Genetic score (genetic_association): 0.00; Genetic score (somatic_mutation): 0.62",
+      "trials": "Genetic score (genetic_association): 0.00; Genetic score (somatic_mutation): 0.62",
+      "clinical_total": "Genetic score (genetic_association): 0.00; Genetic score (somatic_mutation): 0.62",
+      "sm_tractability": "SM(5): Approved Drug, Structure with Ligand",
+      "ab_tractability": "SM(5): Approved Drug, Structure with Ligand",
+      "druggability_total": "SM(5): Approved Drug, Structure with Ligand",
+      "pathways": "19 pw: Transcriptional regulation of white adip; Evasion of Oncogene Induced Senescence D; Literature: 0.11",
+      "expression": "19 pw: Transcriptional regulation of white adip; Evasion of Oncogene Induced Senescence D; Literature: 0.11",
+      "literature": "19 pw: Transcriptional regulation of white adip; Evasion of Oncogene Induced Senescence D; Literature: 0.11",
+      "pathway_total": "19 pw: Transcriptional regulation of white adip; Evasion of Oncogene Induced Senescence D; Literature: 0.11",
+      "safety": "No safety liabilities reported"
+    },
+    "notes": "Clinical: Genetic score (genetic_association): 0.00; Genetic score (somatic_mutation): 0.62. Druggability: SM(5): Approved Drug, Structure with Ligand. Pathway: 19 pw: Transcriptional regulation of white adip; Evasion of Oncogene Induced Senescence D; Literature: 0.11."
+  },
+  {
+    "name": "CDK6",
+    "fullName": "cyclin dependent kinase 6",
+    "ensemblId": "ENSG00000105810",
+    "disease": "breast carcinoma",
+    "context": "Serine/threonine-protein kinase involved in the control of the cell cycle and di",
+    "scores": {
+      "genetic": 4,
+      "trials": 4,
+      "clinical_total": 4,
+      "sm_tractability": 3,
+      "ab_tractability": 2,
+      "druggability_total": 3,
+      "pathways": 4,
+      "expression": 3,
+      "literature": 4,
+      "pathway_total": 4,
+      "safety": 1
+    },
+    "reasons": {
+      "genetic": "Genetic score (somatic_mutation): 0.87",
+      "trials": "Genetic score (somatic_mutation): 0.87",
+      "clinical_total": "Genetic score (somatic_mutation): 0.87",
+      "sm_tractability": "SM(5): Approved Drug, Structure with Ligand",
+      "ab_tractability": "SM(5): Approved Drug, Structure with Ligand",
+      "druggability_total": "SM(5): Approved Drug, Structure with Ligand",
+      "pathways": "9 pw: Regulation of RUNX1 Expression and Activ; Evasion of Oncogene Induced Senescence D; Literature: 0.25; Expression: 0.06",
+      "expression": "9 pw: Regulation of RUNX1 Expression and Activ; Evasion of Oncogene Induced Senescence D; Literature: 0.25; Expression: 0.06",
+      "literature": "9 pw: Regulation of RUNX1 Expression and Activ; Evasion of Oncogene Induced Senescence D; Literature: 0.25; Expression: 0.06",
+      "pathway_total": "9 pw: Regulation of RUNX1 Expression and Activ; Evasion of Oncogene Induced Senescence D; Literature: 0.25; Expression: 0.06",
+      "safety": "High LoF intolerance (pLI-like score=1.00)"
+    },
+    "notes": "Clinical: Genetic score (somatic_mutation): 0.87. Druggability: SM(5): Approved Drug, Structure with Ligand. Pathway: 9 pw: Regulation of RUNX1 Expression and Activ; Evasion of Oncogene Induced Senescence D; Literature: 0.25; Expression: 0.06."
+  },
+  {
+    "name": "CDK6",
+    "fullName": "cyclin dependent kinase 6",
+    "ensemblId": "ENSG00000105810",
+    "disease": "ovarian carcinoma",
+    "context": "Serine/threonine-protein kinase involved in the control of the cell cycle and di",
+    "scores": {
+      "genetic": 4,
+      "trials": 4,
+      "clinical_total": 4,
+      "sm_tractability": 3,
+      "ab_tractability": 2,
+      "druggability_total": 3,
+      "pathways": 4,
+      "expression": 3,
+      "literature": 4,
+      "pathway_total": 4,
+      "safety": 1
+    },
+    "reasons": {
+      "genetic": "Genetic score (somatic_mutation): 0.72",
+      "trials": "Genetic score (somatic_mutation): 0.72",
+      "clinical_total": "Genetic score (somatic_mutation): 0.72",
+      "sm_tractability": "SM(5): Approved Drug, Structure with Ligand",
+      "ab_tractability": "SM(5): Approved Drug, Structure with Ligand",
+      "druggability_total": "SM(5): Approved Drug, Structure with Ligand",
+      "pathways": "9 pw: Regulation of RUNX1 Expression and Activ; Evasion of Oncogene Induced Senescence D; Literature: 0.03; Expression: 0.08",
+      "expression": "9 pw: Regulation of RUNX1 Expression and Activ; Evasion of Oncogene Induced Senescence D; Literature: 0.03; Expression: 0.08",
+      "literature": "9 pw: Regulation of RUNX1 Expression and Activ; Evasion of Oncogene Induced Senescence D; Literature: 0.03; Expression: 0.08",
+      "pathway_total": "9 pw: Regulation of RUNX1 Expression and Activ; Evasion of Oncogene Induced Senescence D; Literature: 0.03; Expression: 0.08",
+      "safety": "High LoF intolerance (pLI-like score=1.00)"
+    },
+    "notes": "Clinical: Genetic score (somatic_mutation): 0.72. Druggability: SM(5): Approved Drug, Structure with Ligand. Pathway: 9 pw: Regulation of RUNX1 Expression and Activ; Evasion of Oncogene Induced Senescence D; Literature: 0.03; Expression: 0.08."
   }
 ];
 
@@ -222,7 +325,7 @@ function render() {
   ranked.forEach((t, i) => {
     const th = document.createElement("th");
     th.className = "target-head" + (t.vetoed ? " vetoed" : "") + (selectedTarget === i ? " selected" : "");
-    th.innerHTML = `<div class="target-name">${t.name}</div><div class="target-context">${(t.context || "").slice(0, 55)}${(t.context || "").length > 55 ? "…" : ""}</div>`;
+    th.innerHTML = `<div class="target-name">${t.name}</div><div class="target-context">${t.disease || ""}</div>`;
     th.onclick = () => { selectedTarget = selectedTarget === i ? null : i; render(); };
     headerRow.appendChild(th);
   });

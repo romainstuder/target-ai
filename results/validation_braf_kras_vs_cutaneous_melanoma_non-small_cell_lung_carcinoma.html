@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Target Validation — Alzheimer disease</title>
+<title>Target Validation — cutaneous melanoma, non-small cell lung carcinoma</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -95,7 +95,7 @@
 <body>
 <div class="container">
   <h1>Target Validation Scoring Matrix</h1>
-  <p class="subtitle">1 targets scored against Alzheimer disease across 7 evidence sub-dimensions. Scores 0-5 per dimension. Weighted composite determines ranking. Safety score of 0 = veto. Hover scores for details. Click target names for notes.</p>
+  <p class="subtitle">2 target(s) (BRAF, KRAS) scored against 2 disease(s) (cutaneous melanoma, non-small cell lung carcinoma) across 7 evidence sub-dimensions. Scores 0-5 per dimension. Weighted composite determines ranking. Safety score of 0 = veto. Hover scores for details. Click target names for notes.</p>
 
   <div class="matrix-wrap">
     <table id="matrix">
@@ -128,12 +128,12 @@
     </div>
   </div>
 
-  <div class="generated">Generated 2026-03-27 18:15 · Data: Open Targets Platform GraphQL API</div>
+  <div class="generated">Generated 2026-03-29 21:59 · Data: Open Targets Platform GraphQL API</div>
 </div>
 
 <script>
 // ── DATA (injected by open_targets_client.py) ────────────────────────────
-const DISEASE_NAME = "Alzheimer disease";
+const DISEASE_NAME = "cutaneous melanoma, non-small cell lung carcinoma";
 
 const DIMENSIONS = [
   { key: "genetic",           label: "Genetic Association",  group: "clinical",     weight: 0, isVeto: false, descriptions: ["No GWAS or rare-variant signal","Suggestive association","Significant GWAS hit (p<5e-8)","GWAS + rare-variant convergence","Strong colocalisation confirmed","Protective LoF + Mendelian evidence"] },
@@ -151,10 +151,11 @@ const DIMENSIONS = [
 
 const TARGETS = [
   {
-    "name": "APP",
-    "fullName": "amyloid beta precursor protein",
-    "ensemblId": "ENSG00000142192",
-    "context": "Functions as a cell surface receptor and performs physiological functions on the",
+    "name": "BRAF",
+    "fullName": "B-Raf proto-oncogene, serine/threonine kinase",
+    "ensemblId": "ENSG00000157764",
+    "disease": "cutaneous melanoma",
+    "context": "Protein kinase involved in the transduction of mitogenic signals from the cell m",
     "scores": {
       "genetic": 4,
       "trials": 4,
@@ -169,19 +170,121 @@ const TARGETS = [
       "safety": 1
     },
     "reasons": {
-      "genetic": "Genetic score (genetic_literature): 0.61; Genetic score (genetic_association): 0.92",
-      "trials": "Genetic score (genetic_literature): 0.61; Genetic score (genetic_association): 0.92",
-      "clinical_total": "Genetic score (genetic_literature): 0.61; Genetic score (genetic_association): 0.92",
-      "sm_tractability": "SM: Advanced Clinical; SM: Structure with Ligand; SM: High-Quality Ligand; SM: High-Quality Pocket; SM: Druggable Family; AB: Approved Drug; AB: UniProt loc high conf; AB: GO CC high conf; AB: UniProt SigP or TMHMM",
-      "ab_tractability": "SM: Advanced Clinical; SM: Structure with Ligand; SM: High-Quality Ligand; SM: High-Quality Pocket; SM: Druggable Family; AB: Approved Drug; AB: UniProt loc high conf; AB: GO CC high conf; AB: UniProt SigP or TMHMM",
-      "druggability_total": "SM: Advanced Clinical; SM: Structure with Ligand; SM: High-Quality Ligand; SM: High-Quality Pocket; SM: Druggable Family; AB: Approved Drug; AB: UniProt loc high conf; AB: GO CC high conf; AB: UniProt SigP or TMHMM",
-      "pathways": "17 pathway(s): ECM proteoglycans, Platelet degranulation , Deregulated CDK5 triggers multiple neurodegenerative pathways in Alzheimer's disease models; Function: Functions as a cell surface receptor and performs physiological functions on the...; Location: Cell membrane, Membrane, Perikaryon; Literature: 0.61; Literature: 0.99",
-      "expression": "17 pathway(s): ECM proteoglycans, Platelet degranulation , Deregulated CDK5 triggers multiple neurodegenerative pathways in Alzheimer's disease models; Function: Functions as a cell surface receptor and performs physiological functions on the...; Location: Cell membrane, Membrane, Perikaryon; Literature: 0.61; Literature: 0.99",
-      "literature": "17 pathway(s): ECM proteoglycans, Platelet degranulation , Deregulated CDK5 triggers multiple neurodegenerative pathways in Alzheimer's disease models; Function: Functions as a cell surface receptor and performs physiological functions on the...; Location: Cell membrane, Membrane, Perikaryon; Literature: 0.61; Literature: 0.99",
-      "pathway_total": "17 pathway(s): ECM proteoglycans, Platelet degranulation , Deregulated CDK5 triggers multiple neurodegenerative pathways in Alzheimer's disease models; Function: Functions as a cell surface receptor and performs physiological functions on the...; Location: Cell membrane, Membrane, Perikaryon; Literature: 0.61; Literature: 0.99",
+      "genetic": "Genetic score (somatic_mutation): 0.84",
+      "trials": "Genetic score (somatic_mutation): 0.84",
+      "clinical_total": "Genetic score (somatic_mutation): 0.84",
+      "sm_tractability": "SM(5): Approved Drug, Structure with Ligand; AB(3): UniProt loc high conf, GO CC high conf",
+      "ab_tractability": "SM(5): Approved Drug, Structure with Ligand; AB(3): UniProt loc high conf, GO CC high conf",
+      "druggability_total": "SM(5): Approved Drug, Structure with Ligand; AB(3): UniProt loc high conf, GO CC high conf",
+      "pathways": "16 pw: Gain-of-function MRAS complexes activate; Signalling to p38 via RIT and RIN; Literature: 0.72",
+      "expression": "16 pw: Gain-of-function MRAS complexes activate; Signalling to p38 via RIT and RIN; Literature: 0.72",
+      "literature": "16 pw: Gain-of-function MRAS complexes activate; Signalling to p38 via RIT and RIN; Literature: 0.72",
+      "pathway_total": "16 pw: Gain-of-function MRAS complexes activate; Signalling to p38 via RIT and RIN; Literature: 0.72",
       "safety": "High LoF intolerance (pLI-like score=1.00)"
     },
-    "notes": "Clinical: Genetic score (genetic_literature): 0.61; Genetic score (genetic_association): 0.92. Druggability: SM: Advanced Clinical; SM: Structure with Ligand; SM: High-Quality Ligand; SM: High-Quality Pocket; SM: Druggable Family; AB: Approved Drug; AB: UniProt loc high conf; AB: GO CC high conf; AB: UniProt SigP or TMHMM. Pathway: 17 pathway(s): ECM proteoglycans, Platelet degranulation , Deregulated CDK5 triggers multiple neurodegenerative pathways in Alzheimer's disease models; Function: Functions as a cell surface receptor and performs physiological functions on the...; Location: Cell membrane, Membrane, Perikaryon; Literature: 0.61; Literature: 0.99."
+    "notes": "Clinical: Genetic score (somatic_mutation): 0.84. Druggability: SM(5): Approved Drug, Structure with Ligand; AB(3): UniProt loc high conf, GO CC high conf. Pathway: 16 pw: Gain-of-function MRAS complexes activate; Signalling to p38 via RIT and RIN; Literature: 0.72."
+  },
+  {
+    "name": "BRAF",
+    "fullName": "B-Raf proto-oncogene, serine/threonine kinase",
+    "ensemblId": "ENSG00000157764",
+    "disease": "non-small cell lung carcinoma",
+    "context": "Protein kinase involved in the transduction of mitogenic signals from the cell m",
+    "scores": {
+      "genetic": 4,
+      "trials": 4,
+      "clinical_total": 4,
+      "sm_tractability": 3,
+      "ab_tractability": 2,
+      "druggability_total": 3,
+      "pathways": 5,
+      "expression": 4,
+      "literature": 5,
+      "pathway_total": 5,
+      "safety": 1
+    },
+    "reasons": {
+      "genetic": "Genetic score (genetic_literature): 0.76; Genetic score (somatic_mutation): 0.87",
+      "trials": "Genetic score (genetic_literature): 0.76; Genetic score (somatic_mutation): 0.87",
+      "clinical_total": "Genetic score (genetic_literature): 0.76; Genetic score (somatic_mutation): 0.87",
+      "sm_tractability": "SM(5): Approved Drug, Structure with Ligand; AB(3): UniProt loc high conf, GO CC high conf",
+      "ab_tractability": "SM(5): Approved Drug, Structure with Ligand; AB(3): UniProt loc high conf, GO CC high conf",
+      "druggability_total": "SM(5): Approved Drug, Structure with Ligand; AB(3): UniProt loc high conf, GO CC high conf",
+      "pathways": "16 pw: Gain-of-function MRAS complexes activate; Signalling to p38 via RIT and RIN; Literature: 0.76; Literature: 0.98",
+      "expression": "16 pw: Gain-of-function MRAS complexes activate; Signalling to p38 via RIT and RIN; Literature: 0.76; Literature: 0.98",
+      "literature": "16 pw: Gain-of-function MRAS complexes activate; Signalling to p38 via RIT and RIN; Literature: 0.76; Literature: 0.98",
+      "pathway_total": "16 pw: Gain-of-function MRAS complexes activate; Signalling to p38 via RIT and RIN; Literature: 0.76; Literature: 0.98",
+      "safety": "High LoF intolerance (pLI-like score=1.00)"
+    },
+    "notes": "Clinical: Genetic score (genetic_literature): 0.76; Genetic score (somatic_mutation): 0.87. Druggability: SM(5): Approved Drug, Structure with Ligand; AB(3): UniProt loc high conf, GO CC high conf. Pathway: 16 pw: Gain-of-function MRAS complexes activate; Signalling to p38 via RIT and RIN; Literature: 0.76; Literature: 0.98."
+  },
+  {
+    "name": "KRAS",
+    "fullName": "KRAS proto-oncogene, GTPase",
+    "ensemblId": "ENSG00000133703",
+    "disease": "non-small cell lung carcinoma",
+    "context": "Ras proteins bind GDP/GTP and possess intrinsic GTPase activity (PubMed:20949621",
+    "scores": {
+      "genetic": 4,
+      "trials": 4,
+      "clinical_total": 4,
+      "sm_tractability": 3,
+      "ab_tractability": 2,
+      "druggability_total": 3,
+      "pathways": 5,
+      "expression": 4,
+      "literature": 5,
+      "pathway_total": 5,
+      "safety": 1
+    },
+    "reasons": {
+      "genetic": "Genetic score (genetic_literature): 0.76; Genetic score (somatic_mutation): 0.92",
+      "trials": "Genetic score (genetic_literature): 0.76; Genetic score (somatic_mutation): 0.92",
+      "clinical_total": "Genetic score (genetic_literature): 0.76; Genetic score (somatic_mutation): 0.92",
+      "sm_tractability": "SM(3): Approved Drug, Structure with Ligand; AB(2): UniProt loc high conf, GO CC high conf",
+      "ab_tractability": "SM(3): Approved Drug, Structure with Ligand; AB(2): UniProt loc high conf, GO CC high conf",
+      "druggability_total": "SM(3): Approved Drug, Structure with Ligand; AB(2): UniProt loc high conf, GO CC high conf",
+      "pathways": "71 pw: Signalling to RAS; SHC-related events triggered by IGF1R; Literature: 0.76; Literature: 1.00",
+      "expression": "71 pw: Signalling to RAS; SHC-related events triggered by IGF1R; Literature: 0.76; Literature: 1.00",
+      "literature": "71 pw: Signalling to RAS; SHC-related events triggered by IGF1R; Literature: 0.76; Literature: 1.00",
+      "pathway_total": "71 pw: Signalling to RAS; SHC-related events triggered by IGF1R; Literature: 0.76; Literature: 1.00",
+      "safety": "High LoF intolerance (pLI-like score=1.00)"
+    },
+    "notes": "Clinical: Genetic score (genetic_literature): 0.76; Genetic score (somatic_mutation): 0.92. Druggability: SM(3): Approved Drug, Structure with Ligand; AB(2): UniProt loc high conf, GO CC high conf. Pathway: 71 pw: Signalling to RAS; SHC-related events triggered by IGF1R; Literature: 0.76; Literature: 1.00."
+  },
+  {
+    "name": "KRAS",
+    "fullName": "KRAS proto-oncogene, GTPase",
+    "ensemblId": "ENSG00000133703",
+    "disease": "cutaneous melanoma",
+    "context": "Ras proteins bind GDP/GTP and possess intrinsic GTPase activity (PubMed:20949621",
+    "scores": {
+      "genetic": 4,
+      "trials": 4,
+      "clinical_total": 4,
+      "sm_tractability": 3,
+      "ab_tractability": 2,
+      "druggability_total": 3,
+      "pathways": 4,
+      "expression": 3,
+      "literature": 4,
+      "pathway_total": 4,
+      "safety": 1
+    },
+    "reasons": {
+      "genetic": "Genetic score (somatic_mutation): 0.68",
+      "trials": "Genetic score (somatic_mutation): 0.68",
+      "clinical_total": "Genetic score (somatic_mutation): 0.68",
+      "sm_tractability": "SM(3): Approved Drug, Structure with Ligand; AB(2): UniProt loc high conf, GO CC high conf",
+      "ab_tractability": "SM(3): Approved Drug, Structure with Ligand; AB(2): UniProt loc high conf, GO CC high conf",
+      "druggability_total": "SM(3): Approved Drug, Structure with Ligand; AB(2): UniProt loc high conf, GO CC high conf",
+      "pathways": "71 pw: Signalling to RAS; SHC-related events triggered by IGF1R; Literature: 0.17",
+      "expression": "71 pw: Signalling to RAS; SHC-related events triggered by IGF1R; Literature: 0.17",
+      "literature": "71 pw: Signalling to RAS; SHC-related events triggered by IGF1R; Literature: 0.17",
+      "pathway_total": "71 pw: Signalling to RAS; SHC-related events triggered by IGF1R; Literature: 0.17",
+      "safety": "High LoF intolerance (pLI-like score=1.00)"
+    },
+    "notes": "Clinical: Genetic score (somatic_mutation): 0.68. Druggability: SM(3): Approved Drug, Structure with Ligand; AB(2): UniProt loc high conf, GO CC high conf. Pathway: 71 pw: Signalling to RAS; SHC-related events triggered by IGF1R; Literature: 0.17."
   }
 ];
 
@@ -222,7 +325,7 @@ function render() {
   ranked.forEach((t, i) => {
     const th = document.createElement("th");
     th.className = "target-head" + (t.vetoed ? " vetoed" : "") + (selectedTarget === i ? " selected" : "");
-    th.innerHTML = `<div class="target-name">${t.name}</div><div class="target-context">${(t.context || "").slice(0, 55)}${(t.context || "").length > 55 ? "…" : ""}</div>`;
+    th.innerHTML = `<div class="target-name">${t.name}</div><div class="target-context">${t.disease || ""}</div>`;
     th.onclick = () => { selectedTarget = selectedTarget === i ? null : i; render(); };
     headerRow.appendChild(th);
   });

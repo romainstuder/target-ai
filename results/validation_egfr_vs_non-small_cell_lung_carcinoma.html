@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Target Validation — hypercholesterolemia</title>
+<title>Target Validation — non-small cell lung carcinoma</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -95,7 +95,7 @@
 <body>
 <div class="container">
   <h1>Target Validation Scoring Matrix</h1>
-  <p class="subtitle">1 targets scored against hypercholesterolemia across 7 evidence sub-dimensions. Scores 0-5 per dimension. Weighted composite determines ranking. Safety score of 0 = veto. Hover scores for details. Click target names for notes.</p>
+  <p class="subtitle">1 target(s) (EGFR) scored against 1 disease(s) (non-small cell lung carcinoma) across 7 evidence sub-dimensions. Scores 0-5 per dimension. Weighted composite determines ranking. Safety score of 0 = veto. Hover scores for details. Click target names for notes.</p>
 
   <div class="matrix-wrap">
     <table id="matrix">
@@ -128,12 +128,12 @@
     </div>
   </div>
 
-  <div class="generated">Generated 2026-03-27 14:39 · Data: Open Targets Platform GraphQL API</div>
+  <div class="generated">Generated 2026-03-29 22:00 · Data: Open Targets Platform GraphQL API</div>
 </div>
 
 <script>
 // ── DATA (injected by open_targets_client.py) ────────────────────────────
-const DISEASE_NAME = "hypercholesterolemia";
+const DISEASE_NAME = "non-small cell lung carcinoma";
 
 const DIMENSIONS = [
   { key: "genetic",           label: "Genetic Association",  group: "clinical",     weight: 0, isVeto: false, descriptions: ["No GWAS or rare-variant signal","Suggestive association","Significant GWAS hit (p<5e-8)","GWAS + rare-variant convergence","Strong colocalisation confirmed","Protective LoF + Mendelian evidence"] },
@@ -151,37 +151,38 @@ const DIMENSIONS = [
 
 const TARGETS = [
   {
-    "name": "TLR4",
-    "fullName": "",
-    "ensemblId": "ENSG00000136869",
-    "context": "",
+    "name": "EGFR",
+    "fullName": "epidermal growth factor receptor",
+    "ensemblId": "ENSG00000146648",
+    "disease": "non-small cell lung carcinoma",
+    "context": "Receptor tyrosine kinase binding ligands of the EGF family and activating severa",
     "scores": {
-      "genetic": 0,
-      "trials": 0,
-      "clinical_total": 0,
-      "sm_tractability": 0,
-      "ab_tractability": 0,
-      "druggability_total": 0,
-      "pathways": 0,
-      "expression": 0,
-      "literature": 0,
-      "pathway_total": 0,
-      "safety": 5
+      "genetic": 4,
+      "trials": 4,
+      "clinical_total": 4,
+      "sm_tractability": 3,
+      "ab_tractability": 2,
+      "druggability_total": 3,
+      "pathways": 5,
+      "expression": 4,
+      "literature": 5,
+      "pathway_total": 5,
+      "safety": 1
     },
     "reasons": {
-      "genetic": "No clinical or genetic evidence found",
-      "trials": "No clinical or genetic evidence found",
-      "clinical_total": "No clinical or genetic evidence found",
-      "sm_tractability": "No tractability or drug data",
-      "ab_tractability": "No tractability or drug data",
-      "druggability_total": "No tractability or drug data",
-      "pathways": "No pathway or expression data",
-      "expression": "No pathway or expression data",
-      "literature": "No pathway or expression data",
-      "pathway_total": "No pathway or expression data",
-      "safety": "No safety liabilities reported"
+      "genetic": "Genetic score (genetic_literature): 0.61; Genetic score (genetic_association): 0.93; Genetic score (somatic_mutation): 0.93",
+      "trials": "Genetic score (genetic_literature): 0.61; Genetic score (genetic_association): 0.93; Genetic score (somatic_mutation): 0.93",
+      "clinical_total": "Genetic score (genetic_literature): 0.61; Genetic score (genetic_association): 0.93; Genetic score (somatic_mutation): 0.93",
+      "sm_tractability": "SM(5): Approved Drug, Structure with Ligand; AB(6): Approved Drug, UniProt loc high conf",
+      "ab_tractability": "SM(5): Approved Drug, Structure with Ligand; AB(6): Approved Drug, UniProt loc high conf",
+      "druggability_total": "SM(5): Approved Drug, Structure with Ligand; AB(6): Approved Drug, UniProt loc high conf",
+      "pathways": "37 pw: Extra-nuclear estrogen signaling; PI5P, PP2A and IER3 Regulate PI3K/AKT Si; Literature: 0.61; Literature: 1.00",
+      "expression": "37 pw: Extra-nuclear estrogen signaling; PI5P, PP2A and IER3 Regulate PI3K/AKT Si; Literature: 0.61; Literature: 1.00",
+      "literature": "37 pw: Extra-nuclear estrogen signaling; PI5P, PP2A and IER3 Regulate PI3K/AKT Si; Literature: 0.61; Literature: 1.00",
+      "pathway_total": "37 pw: Extra-nuclear estrogen signaling; PI5P, PP2A and IER3 Regulate PI3K/AKT Si; Literature: 0.61; Literature: 1.00",
+      "safety": "High LoF intolerance (pLI-like score=0.98)"
     },
-    "notes": "Clinical: No clinical or genetic evidence found. Druggability: No tractability or drug data. Pathway: No pathway or expression data."
+    "notes": "Clinical: Genetic score (genetic_literature): 0.61; Genetic score (genetic_association): 0.93; Genetic score (somatic_mutation): 0.93. Druggability: SM(5): Approved Drug, Structure with Ligand; AB(6): Approved Drug, UniProt loc high conf. Pathway: 37 pw: Extra-nuclear estrogen signaling; PI5P, PP2A and IER3 Regulate PI3K/AKT Si; Literature: 0.61; Literature: 1.00."
   }
 ];
 
@@ -222,7 +223,7 @@ function render() {
   ranked.forEach((t, i) => {
     const th = document.createElement("th");
     th.className = "target-head" + (t.vetoed ? " vetoed" : "") + (selectedTarget === i ? " selected" : "");
-    th.innerHTML = `<div class="target-name">${t.name}</div><div class="target-context">${(t.context || "").slice(0, 55)}${(t.context || "").length > 55 ? "…" : ""}</div>`;
+    th.innerHTML = `<div class="target-name">${t.name}</div><div class="target-context">${t.disease || ""}</div>`;
     th.onclick = () => { selectedTarget = selectedTarget === i ? null : i; render(); };
     headerRow.appendChild(th);
   });
