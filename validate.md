@@ -8,6 +8,7 @@ description: Run a full target validation analysis scoring multiple gene targets
 Run a full target validation analysis.
 
 ## Usage
+
 ```
 /validate BRAF,KRAS — melanoma,lung cancer
 ```
@@ -26,6 +27,7 @@ Given the user's input in `$ARGUMENTS`:
 2. **Resolve identifiers.** For each target and disease, query the Open Targets Platform search API to get canonical Ensembl Gene IDs and EFO Disease IDs. Confirm with the user if any resolution is ambiguous (multiple hits with similar scores).
 
 3. **Fetch data.** For every (target, disease) pair, run the GraphQL queries defined in CLAUDE.md:
+
    - Association scores (overall + per datatype + per datasource)
    - Target tractability and safety liabilities
    - Known drugs for the target–disease pair
@@ -42,6 +44,7 @@ Given the user's input in `$ARGUMENTS`:
    ```
 
    This creates four files in `results/`:
+
    - `validation_report.md` — Markdown report
    - `scores.csv` — CSV for downstream analysis
    - `raw_data.json` — Raw API data

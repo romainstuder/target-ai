@@ -42,6 +42,7 @@ That's it. Claude Code reads the `CLAUDE.md` file on startup and becomes your ta
 Once inside Claude Code, use these commands:
 
 #### `validate` — Multi-target × multi-disease scoring
+
 ```
 validate BRAF,KRAS — melanoma,lung cancer
 validate PCSK9,HMGCR,ANGPTL3 — cardiovascular disease
@@ -50,8 +51,8 @@ validate EGFR,HER2,HER3,MET — non-small cell lung cancer
 compare-targets JAK1,JAK2,JAK3,TYK2 — rheumatoid arthritis
 ```
 
-
 #### `find-targets` — Discover top targets for a disease
+
 ```
 find-targets Alzheimer's disease
 find-targets Crohn's disease 20
@@ -101,11 +102,11 @@ python3 open_targets_client.py pathways "PCSK9,HMGCR,ANGPTL3"
 
 ### Dimensions & Weights
 
-| Dimension | Weight | Data Sources |
-|-----------|--------|-------------|
-| Clinical Evidence | 40% | GWAS Catalog, ClinVar, ClinGen, UniProt, clinical trials (ChEMBL) |
-| Druggability | 35% | Open Targets tractability, ChEMBL drugs, structural data |
-| Pathway/Biology | 25% | Reactome, literature mining (EuropePMC), expression (Expression Atlas) |
+| Dimension         | Weight | Data Sources                                                           |
+| ----------------- | ------ | ---------------------------------------------------------------------- |
+| Clinical Evidence | 40%    | GWAS Catalog, ClinVar, ClinGen, UniProt, clinical trials (ChEMBL)      |
+| Druggability      | 35%    | Open Targets tractability, ChEMBL drugs, structural data               |
+| Pathway/Biology   | 25%    | Reactome, literature mining (EuropePMC), expression (Expression Atlas) |
 
 ### Composite Score
 
@@ -115,22 +116,22 @@ Composite = (Clinical × 0.40) + (Druggability × 0.35) + (Pathway × 0.25)
 
 ### Confidence Levels
 
-| Level | Criteria |
-|-------|---------|
-| **High** | Composite ≥ 3.5 with data from ≥ 3 independent source types |
-| **Medium** | Composite 2.0–3.49 or limited independent sources |
-| **Low** | Composite < 2.0 or based primarily on literature mining |
+| Level      | Criteria                                                    |
+| ---------- | ----------------------------------------------------------- |
+| **High**   | Composite ≥ 3.5 with data from ≥ 3 independent source types |
+| **Medium** | Composite 2.0–3.49 or limited independent sources           |
+| **Low**    | Composite < 2.0 or based primarily on literature mining     |
 
 ## Output Files
 
 After each validation run, results are saved to the `results/` directory. File names encode both targets and diseases:
 
-| File | Contents |
-|------|---------|
+| File                                      | Contents                                                |
+| ----------------------------------------- | ------------------------------------------------------- |
 | `validation_{targets}_vs_{diseases}.html` | **★ Interactive HTML scoring matrix** — open in browser |
-| `validation_{targets}_vs_{diseases}.md` | Markdown report with tables and narrative |
-| `scores_{targets}_vs_{diseases}.csv` | Machine-readable scores for downstream analysis |
-| `raw_data_{targets}_vs_{diseases}.json` | Raw API responses for reproducibility and auditing |
+| `validation_{targets}_vs_{diseases}.md`   | Markdown report with tables and narrative               |
+| `scores_{targets}_vs_{diseases}.csv`      | Machine-readable scores for downstream analysis         |
+| `raw_data_{targets}_vs_{diseases}.json`   | Raw API responses for reproducibility and auditing      |
 
 Example: `validation_braf_kras_vs_cutaneous_melanoma_non-small_cell_lung_carcinoma.html`
 
