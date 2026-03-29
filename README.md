@@ -12,8 +12,8 @@ Given one or more **gene targets** and **diseases**, this tool:
    - **Clinical Evidence** — GWAS hits, rare variants, clinical trial history
    - **Druggability** — small-molecule/antibody tractability, existing chemical matter
    - **Pathway/Biology** — pathway membership, tissue expression, animal models
-4. **Ranks** by weighted composite score and provides a detailed narrative analysis
-5. **Saves** results as Markdown report, CSV, and raw JSON
+4. **Ranks** by weighted composite score with compact narrative
+5. **Generates** an interactive HTML scoring matrix plus Markdown report, CSV, and raw JSON
 
 ## Quick Start
 
@@ -46,24 +46,15 @@ Once inside Claude Code, use these commands:
 validate BRAF,KRAS — melanoma,lung cancer
 validate PCSK9,HMGCR,ANGPTL3 — cardiovascular disease
 validate CDK4,CDK6 — breast cancer, ovarian cancer
-```
-
-#### `score-target` — Deep-dive on a single target
-```
-score-target PCSK9 — cardiovascular disease, familial hypercholesterolemia
-score-target EGFR — non-small cell lung cancer
-```
-
-#### `compare-targets` — Head-to-head comparison for one disease
-```
-compare-targets EGFR,HER2,HER3,MET — non-small cell lung cancer
+validate EGFR,HER2,HER3,MET — non-small cell lung cancer
 compare-targets JAK1,JAK2,JAK3,TYK2 — rheumatoid arthritis
 ```
+
 
 #### `find-targets` — Discover top targets for a disease
 ```
 find-targets Alzheimer's disease
-find-targets Crohn's disease --top 20
+find-targets Crohn's disease 20
 ```
 
 ### Usage — Natural Language
@@ -86,14 +77,24 @@ You can also just talk to Claude naturally:
 The included Python script can also be run independently:
 
 ```bash
-# Search for a target
-python open_targets_client.py search-target BRAF
+# Search for a target or disease
+python3 open_targets_client.py search-target BRAF
+python3 open_targets_client.py search-disease "breast cancer"
+
+# Find top targets for a disease
+python3 open_targets_client.py find-targets "Alzheimer disease"
+python3 open_targets_client.py find-targets "Alzheimer disease" 20
 
 # Full validation
-python open_targets_client.py validate "BRAF,KRAS" "melanoma,lung cancer"
+python3 open_targets_client.py validate "BRAF,KRAS" "cutaneous melanoma,non-small cell lung carcinoma"
 
-# Get target tractability info
-python open_targets_client.py target-info ENSG00000157764
+# Individual lookups
+python3 open_targets_client.py target-info ENSG00000157764
+python3 open_targets_client.py known-drugs ENSG00000157764
+python3 open_targets_client.py association ENSG00000157764 EFO_0000389
+
+# Pathway visualization
+python3 open_targets_client.py pathways "PCSK9,HMGCR,ANGPTL3"
 ```
 
 ## Scoring Methodology
@@ -122,14 +123,16 @@ Composite = (Clinical × 0.40) + (Druggability × 0.35) + (Pathway × 0.25)
 
 ## Output Files
 
-After each validation run, results are saved to the `results/` directory:
+After each validation run, results are saved to the `results/` directory. File names encode both targets and diseases:
 
 | File | Contents |
 |------|---------|
-| `validation_{disease}.html` | **★ Interactive HTML scoring matrix** — open in browser |
-| `validation_report.md` | Full Markdown report with tables and narrative |
-| `scores.csv` | Machine-readable scores for downstream analysis |
-| `raw_data.json` | Raw API responses for reproducibility and auditing |
+| `validation_{targets}_vs_{diseases}.html` | **★ Interactive HTML scoring matrix** — open in browser |
+| `validation_{targets}_vs_{diseases}.md` | Markdown report with tables and narrative |
+| `scores_{targets}_vs_{diseases}.csv` | Machine-readable scores for downstream analysis |
+| `raw_data_{targets}_vs_{diseases}.json` | Raw API responses for reproducibility and auditing |
+
+Example: `validation_braf_kras_vs_cutaneous_melanoma_non-small_cell_lung_carcinoma.html`
 
 ## Project Structure
 
@@ -137,24 +140,18 @@ After each validation run, results are saved to the `results/` directory:
 target-validation-tool/
 ├── CLAUDE.md                          # Core instructions (read by Claude Code on startup)
 ├── README.md                          # This file
-├── open_targets_client.py             # Python API client + HTML generator
-├── report_template.html               # HTML template (data injected by Python)
-├── .claude/
-│   └── skills/
-│       ├── validate/SKILL.md          # validate skill
-│       ├── score-target/SKILL.md      # score-target skill
-│       ├── compare-targets/SKILL.md   # compare-targets skill
-│       └── find-targets/SKILL.md      # find-targets skill
-└── results/                           # Generated outputs
-    ├── validation_melanoma.html       #   ★ Interactive HTML (primary deliverable)
-    ├── validation_report.md
-    ├── scores.csv
-    └── raw_data.json
+├── open_targets_client.py             # Python API client, scoring engine + HTML generator
+├── report_template.html               # HTML template for interactive scoring matrix
+└── results/                           # Generated outputs (gitignored)
+    ├── validation_*_vs_*.html         #   ★ Interactive HTML (primary deliverable)
+    ├── validation_*_vs_*.md
+    ├── scores_*_vs_*.csv
+    └── raw_data_*_vs_*.json
 ```
 
-> **Note:** Commands are defined in both `.claude/skills/` and `.claude/commands/` for
-> compatibility across Claude Code versions. You can also just type naturally —
-> `CLAUDE.md` is always loaded and Claude will run the right Python command.
+> **Note:** All commands (`validate`, `find-targets`, `score-target`, `compare-targets`)
+> are handled via `CLAUDE.md` instructions — just type naturally and Claude will run the
+> right Python command.
 
 ## Customization
 

@@ -83,12 +83,11 @@ The script automatically:
 
 ### Step 3 — Present Results
 
-After the script runs, read and present the results to the user:
-1. Show the Markdown table from stdout
+After the script runs, the compact output already contains everything needed. Do NOT
+reformat, expand, or re-explain the script output — it wastes tokens. Just:
+1. Let the script output speak for itself (table + compact narrative are already printed)
 2. Tell the user to open `results/validation_{disease}.html` in their browser
-3. Add a brief narrative for each target–disease pair explaining:
-   - The strongest piece of evidence
-   - The biggest risk/gap
+3. Only add a brief comment if there is something surprising or a clear gap/risk
    - Suggested next steps
 
 ### Step 4 — Supplement with Web Search (optional)
