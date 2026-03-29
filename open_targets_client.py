@@ -12,10 +12,13 @@ Usage:
     python3 open_targets_client.py find-targets "Alzheimer disease" [top_n]
 """
 
-import json, sys, csv, os
-from urllib.request import Request, urlopen
-from urllib.error import URLError, HTTPError
+import csv
+import json
+import os
+import sys
 from datetime import datetime
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 API_URL = "https://api.platform.opentargets.org/api/v4/graphql"
 
@@ -34,6 +37,7 @@ def graphql_query(query: str, variables: dict | None = None) -> dict:
 
 
 # ── Search ─────────────────────────────────────────────────────────────────
+
 
 def search_target(name: str) -> dict:
     q = """query($q: String!) {
@@ -55,6 +59,7 @@ def search_disease(name: str) -> dict:
 
 # ── Target Info (tractability, safety, constraint, pathways) ───────────────
 
+
 def get_target_info(ensembl_id: str) -> dict:
     q = """query($ensemblId: String!) {
       target(ensemblId: $ensemblId) {
@@ -73,6 +78,7 @@ def get_target_info(ensembl_id: str) -> dict:
 
 
 # ── Drugs & Clinical Candidates ────────────────────────────────────────────
+
 
 def get_known_drugs(ensembl_id: str) -> dict:
     q = """query($ensemblId: String!) {
@@ -94,6 +100,7 @@ def get_known_drugs(ensembl_id: str) -> dict:
 
 # ── Find Targets for Disease ──────────────────────────────────────────────
 
+
 def find_targets_for_disease(efo_id: str, top_n: int = 10) -> dict:
     q = """query($efoId: String!, $size: Int!) {
       disease(efoId: $efoId) {
@@ -112,6 +119,7 @@ def find_targets_for_disease(efo_id: str, top_n: int = 10) -> dict:
 
 
 # ── Association (target-disease) ───────────────────────────────────────────
+
 
 def get_association(ensembl_id: str, efo_id: str) -> dict:
     q = """query($efoId: String!, $ensemblIds: [String!]) {
@@ -159,11 +167,19 @@ def get_association(ensembl_id: str, efo_id: str) -> dict:
 
 # ── Scoring Logic ──────────────────────────────────────────────────────────
 
+
 def score_clinical(assoc_data: dict, drugs_data: dict, efo_id: str) -> tuple[int, str]:
     reasons = []
 
     # Map maxClinicalStage strings to numeric phases
-    stage_map = {"Phase IV": 4, "Approved": 4, "Phase III": 3, "Phase II": 2, "Phase I": 1, "Phase I (Early)": 0.5}
+    stage_map = {
+        "Phase IV": 4,
+        "Approved": 4,
+        "Phase III": 3,
+        "Phase II": 2,
+        "Phase I": 1,
+        "Phase I (Early)": 0.5,
+    }
 
     max_phase = 0
     drug_names = []
@@ -219,16 +235,23 @@ def score_druggability(target_data: dict, drugs_data: dict) -> tuple[int, str]:
             if tr.get("value"):
                 if tr["modality"] == "SM":
                     tract_sm = True
-                    sm_labels.append(tr['label'])
+                    sm_labels.append(tr["label"])
                 elif tr["modality"] == "AB":
                     tract_ab = True
-                    ab_labels.append(tr['label'])
+                    ab_labels.append(tr["label"])
     if sm_labels:
         reasons.append(f"SM({len(sm_labels)}): {', '.join(sm_labels[:2])}")
     if ab_labels:
         reasons.append(f"AB({len(ab_labels)}): {', '.join(ab_labels[:2])}")
 
-    stage_map = {"Phase IV": 4, "Approved": 4, "Phase III": 3, "Phase II": 2, "Phase I": 1, "Phase I (Early)": 0.5}
+    stage_map = {
+        "Phase IV": 4,
+        "Approved": 4,
+        "Phase III": 3,
+        "Phase II": 2,
+        "Phase I": 1,
+        "Phase I (Early)": 0.5,
+    }
     has_approved = False
     has_clinical = False
     n_drugs = 0
@@ -238,8 +261,10 @@ def score_druggability(target_data: dict, drugs_data: dict) -> tuple[int, str]:
         for row in dacc.get("rows", []):
             stage = row.get("maxClinicalStage", "")
             ph = stage_map.get(stage, 0)
-            if ph >= 4: has_approved = True
-            elif ph >= 1: has_clinical = True
+            if ph >= 4:
+                has_approved = True
+            elif ph >= 1:
+                has_clinical = True
         if n_drugs > 0:
             reasons.append(f"{n_drugs} drug/clinical candidate(s)")
 
@@ -282,7 +307,6 @@ def score_pathway(target_data: dict, assoc_data: dict) -> tuple[int, str]:
                     expr_score = ds["score"]
                     reasons.append(f"Expression: {ds['score']:.2f}")
 
-    total = pathway_count > 0
     if pathway_count >= 5 and (expr_score > 0.1 or lit_score > 0.3):
         return 5, "; ".join(reasons)
     elif pathway_count >= 3 or (pathway_count >= 1 and lit_score > 0.2):
@@ -301,12 +325,15 @@ def composite_score(clinical: int, druggability: int, pathway: int) -> float:
 
 
 def confidence_level(comp: float, n_sources: int) -> str:
-    if comp >= 3.5 and n_sources >= 3: return "High"
-    elif comp >= 2.0: return "Medium"
+    if comp >= 3.5 and n_sources >= 3:
+        return "High"
+    elif comp >= 2.0:
+        return "Medium"
     return "Low"
 
 
 # ── Validation Pipeline ───────────────────────────────────────────────────
+
 
 def validate(targets: list[str], diseases: list[str]) -> dict:
     results = []
@@ -349,7 +376,11 @@ def validate(targets: list[str], diseases: list[str]) -> dict:
             target_info = get_target_info(t_id)
             drugs = get_known_drugs(t_id)
 
-            raw_data[pair_key] = {"association": assoc, "target_info": target_info, "known_drugs": drugs}
+            raw_data[pair_key] = {
+                "association": assoc,
+                "target_info": target_info,
+                "known_drugs": drugs,
+            }
 
             clin_score, clin_reason = score_clinical(assoc, drugs, d_id)
             drug_score, drug_reason = score_druggability(target_info, drugs)
@@ -382,24 +413,37 @@ def validate(targets: list[str], diseases: list[str]) -> dict:
                     if g.get("constraintType") == "lof" and g.get("score") is not None:
                         if g["score"] > 0.9:
                             safety = 1
-                            safety_reason = f"High LoF intolerance (pLI-like score={g['score']:.2f})"
+                            safety_reason = (
+                                f"High LoF intolerance (pLI-like score={g['score']:.2f})"
+                            )
 
-            results.append({
-                "target": symbol, "target_id": t_id, "full_name": full_name,
-                "context": context,
-                "disease": disease_name, "disease_id": d_id,
-                "clinical": clin_score, "clinical_reason": clin_reason,
-                "druggability": drug_score, "druggability_reason": drug_reason,
-                "pathway": path_score, "pathway_reason": path_reason,
-                "safety": safety, "safety_reason": safety_reason,
-                "composite": comp, "confidence": conf,
-            })
+            results.append(
+                {
+                    "target": symbol,
+                    "target_id": t_id,
+                    "full_name": full_name,
+                    "context": context,
+                    "disease": disease_name,
+                    "disease_id": d_id,
+                    "clinical": clin_score,
+                    "clinical_reason": clin_reason,
+                    "druggability": drug_score,
+                    "druggability_reason": drug_reason,
+                    "pathway": path_score,
+                    "pathway_reason": path_reason,
+                    "safety": safety,
+                    "safety_reason": safety_reason,
+                    "composite": comp,
+                    "confidence": conf,
+                }
+            )
 
     results.sort(key=lambda x: x["composite"], reverse=True)
     return {"results": results, "raw_data": raw_data}
 
 
 # ── Output Formatters ──────────────────────────────────────────────────────
+
 
 def format_markdown_table(results):
     lines = [
@@ -430,44 +474,46 @@ def format_narrative(results):
 def generate_html(results, disease_name):
     targets_for_js = []
     for r in results:
-        targets_for_js.append({
-            "name": r["target"],
-            "fullName": r.get("full_name", ""),
-            "ensemblId": r.get("target_id", ""),
-            "disease": r.get("disease", ""),
-            "context": r.get("context", ""),
-            "scores": {
-                "genetic": min(r["clinical"], 5),
-                "trials": min(r["clinical"], 5),
-                "clinical_total": r["clinical"],
-                "sm_tractability": min(r["druggability"], 5),
-                "ab_tractability": max(0, r["druggability"] - 1),
-                "druggability_total": r["druggability"],
-                "pathways": min(r["pathway"], 5),
-                "expression": max(0, r["pathway"] - 1),
-                "literature": min(r["pathway"], 5),
-                "pathway_total": r["pathway"],
-                "safety": r.get("safety", 5),
-            },
-            "reasons": {
-                "genetic": r.get("clinical_reason", ""),
-                "trials": r.get("clinical_reason", ""),
-                "clinical_total": r.get("clinical_reason", ""),
-                "sm_tractability": r.get("druggability_reason", ""),
-                "ab_tractability": r.get("druggability_reason", ""),
-                "druggability_total": r.get("druggability_reason", ""),
-                "pathways": r.get("pathway_reason", ""),
-                "expression": r.get("pathway_reason", ""),
-                "literature": r.get("pathway_reason", ""),
-                "pathway_total": r.get("pathway_reason", ""),
-                "safety": r.get("safety_reason", "No safety liabilities reported"),
-            },
-            "notes": (
-                f"Clinical: {r.get('clinical_reason', 'N/A')}. "
-                f"Druggability: {r.get('druggability_reason', 'N/A')}. "
-                f"Pathway: {r.get('pathway_reason', 'N/A')}."
-            ),
-        })
+        targets_for_js.append(
+            {
+                "name": r["target"],
+                "fullName": r.get("full_name", ""),
+                "ensemblId": r.get("target_id", ""),
+                "disease": r.get("disease", ""),
+                "context": r.get("context", ""),
+                "scores": {
+                    "genetic": min(r["clinical"], 5),
+                    "trials": min(r["clinical"], 5),
+                    "clinical_total": r["clinical"],
+                    "sm_tractability": min(r["druggability"], 5),
+                    "ab_tractability": max(0, r["druggability"] - 1),
+                    "druggability_total": r["druggability"],
+                    "pathways": min(r["pathway"], 5),
+                    "expression": max(0, r["pathway"] - 1),
+                    "literature": min(r["pathway"], 5),
+                    "pathway_total": r["pathway"],
+                    "safety": r.get("safety", 5),
+                },
+                "reasons": {
+                    "genetic": r.get("clinical_reason", ""),
+                    "trials": r.get("clinical_reason", ""),
+                    "clinical_total": r.get("clinical_reason", ""),
+                    "sm_tractability": r.get("druggability_reason", ""),
+                    "ab_tractability": r.get("druggability_reason", ""),
+                    "druggability_total": r.get("druggability_reason", ""),
+                    "pathways": r.get("pathway_reason", ""),
+                    "expression": r.get("pathway_reason", ""),
+                    "literature": r.get("pathway_reason", ""),
+                    "pathway_total": r.get("pathway_reason", ""),
+                    "safety": r.get("safety_reason", "No safety liabilities reported"),
+                },
+                "notes": (
+                    f"Clinical: {r.get('clinical_reason', 'N/A')}. "
+                    f"Druggability: {r.get('druggability_reason', 'N/A')}. "
+                    f"Pathway: {r.get('pathway_reason', 'N/A')}."
+                ),
+            }
+        )
 
     targets_json = json.dumps(targets_for_js, indent=2)
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -484,7 +530,7 @@ def generate_html(results, disease_name):
     if not os.path.exists(template_path):
         template_path = os.path.join(".", "report_template.html")
     if not os.path.exists(template_path):
-        return f"<!-- ERROR: report_template.html not found -->"
+        return "<!-- ERROR: report_template.html not found -->"
 
     with open(template_path, "r") as f:
         html = f.read()
@@ -507,7 +553,7 @@ def generate_pathway_html(all_pathway_data: dict) -> str:
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pathway Map — {', '.join(targets_list)}</title>
+<title>Pathway Map — {", ".join(targets_list)}</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{{box-sizing:border-box;margin:0;padding:0}}
@@ -549,7 +595,7 @@ svg{{width:100%;display:block}}
 <body>
 <div class="container">
   <h1>Pathway Map</h1>
-  <p class="sub">{len(targets_list)} target(s): {', '.join(targets_list)}. Pathways from Reactome via Open Targets Platform. Click a pathway for details. Shared pathways are highlighted.</p>
+  <p class="sub">{len(targets_list)} target(s): {", ".join(targets_list)}. Pathways from Reactome via Open Targets Platform. Click a pathway for details. Shared pathways are highlighted.</p>
 
   <div class="controls" id="controls"></div>
   <div class="filter-bar">
@@ -738,7 +784,10 @@ render();
 def _make_slug(results):
     targets = list(dict.fromkeys(r["target"] for r in results))
     diseases = list(dict.fromkeys(r["disease"] for r in results))
-    def slugify(s): return s.lower().replace(" ", "_").replace("'", "")
+
+    def slugify(s):
+        return s.lower().replace(" ", "_").replace("'", "")
+
     return f"{'_'.join(slugify(t) for t in targets)}_vs_{'_'.join(slugify(d) for d in diseases)}"
 
 
@@ -748,8 +797,12 @@ def save_results(validation, output_dir="results"):
     slug = _make_slug(results) if results else "unknown"
 
     with open(f"{output_dir}/validation_{slug}.md", "w") as f:
-        f.write(f"# Target Validation Report\n**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M')}\n\n")
-        f.write(f"## Summary\n\n{format_markdown_table(results)}\n\n## Details\n\n{format_narrative(results)}\n")
+        f.write(
+            f"# Target Validation Report\n**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M')}\n\n"
+        )
+        f.write(
+            f"## Summary\n\n{format_markdown_table(results)}\n\n## Details\n\n{format_narrative(results)}\n"
+        )
 
     if results:
         fieldnames = [k for k in results[0].keys() if k != "full_name" and k != "context"]
@@ -761,7 +814,9 @@ def save_results(validation, output_dir="results"):
     with open(f"{output_dir}/raw_data_{slug}.json", "w") as f:
         json.dump(validation["raw_data"], f, indent=2, default=str)
 
-    disease_label = ", ".join(dict.fromkeys(r["disease"] for r in results)) if results else "unknown"
+    disease_label = (
+        ", ".join(dict.fromkeys(r["disease"] for r in results)) if results else "unknown"
+    )
     html = generate_html(results, disease_label)
     html_path = f"{output_dir}/validation_{slug}.html"
     with open(html_path, "w") as f:
@@ -772,6 +827,7 @@ def save_results(validation, output_dir="results"):
 
 
 # ── CLI ────────────────────────────────────────────────────────────────────
+
 
 def main():
     if len(sys.argv) < 2:
@@ -816,8 +872,8 @@ def main():
         rows = disease_data["associatedTargets"]["rows"]
         total = disease_data["associatedTargets"]["count"]
         print(f"  {disease_data['name']}: {total} associated targets (showing top {len(rows)})\n")
-        print(f"| Rank | Symbol | Name | Score | Top datatype |")
-        print(f"|------|--------|------|:-----:|--------------|")
+        print("| Rank | Symbol | Name | Score | Top datatype |")
+        print("|------|--------|------|:-----:|--------------|")
         for i, row in enumerate(rows, 1):
             t = row["target"]
             score = row["score"]
@@ -859,7 +915,9 @@ def main():
                 "ensemblId": ensembl_id,
                 "symbol": approved,
                 "fullName": full_name,
-                "pathways": [{"id": p.get("pathway",""), "term": p.get("pathway","")} for p in pathways],
+                "pathways": [
+                    {"id": p.get("pathway", ""), "term": p.get("pathway", "")} for p in pathways
+                ],
             }
             print(f"  {approved}: {len(pathways)} pathway(s)")
         # Generate HTML
