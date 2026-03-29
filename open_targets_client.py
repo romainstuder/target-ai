@@ -9,6 +9,7 @@ Usage:
     python3 open_targets_client.py known-drugs ENSG00000157764
     python3 open_targets_client.py association ENSG00000157764 EFO_0000305
     python3 open_targets_client.py validate "BRAF,KRAS" "melanoma"
+    python3 open_targets_client.py find-targets "Alzheimer disease" [top_n]
 """
 
 import json, sys, csv, os
@@ -91,6 +92,25 @@ def get_known_drugs(ensembl_id: str) -> dict:
     return graphql_query(q, {"ensemblId": ensembl_id})
 
 
+# ── Find Targets for Disease ──────────────────────────────────────────────
+
+def find_targets_for_disease(efo_id: str, top_n: int = 10) -> dict:
+    q = """query($efoId: String!, $size: Int!) {
+      disease(efoId: $efoId) {
+        name
+        associatedTargets(page: {size: $size, index: 0}) {
+          count
+          rows {
+            target { id approvedSymbol approvedName }
+            score
+            datatypeScores { id score }
+          }
+        }
+      }
+    }"""
+    return graphql_query(q, {"efoId": efo_id, "size": top_n})
+
+
 # ── Association (target-disease) ───────────────────────────────────────────
 
 def get_association(ensembl_id: str, efo_id: str) -> dict:
@@ -101,36 +121,39 @@ def get_association(ensembl_id: str, efo_id: str) -> dict:
           rows {
             target { id approvedSymbol }
             score
-            datatypeScores { componentId score }
-            datasourceScores { componentId score }
+            datatypeScores { id score }
+            datasourceScores { id score }
           }
         }
       }
     }"""
     result = graphql_query(q, {"efoId": efo_id, "ensemblIds": [ensembl_id]})
-    # Fallback: if Bs filter returns nothing, try without filter (broader search)
+    # Check if we got valid rows
+    got_rows = False
     if "data" in result and result["data"].get("disease"):
         rows = result["data"]["disease"]["associatedTargets"]["rows"]
-        if not rows:
-            # Try broader query without Bs filter
-            q2 = """query($efoId: String!) {
-              disease(efoId: $efoId) {
-                name
-                associatedTargets(page: {size: 500, index: 0}) {
-                  rows {
-                    target { id approvedSymbol }
-                    score
-                    datatypeScores { componentId score }
-                    datasourceScores { componentId score }
-                  }
-                }
+        got_rows = len(rows) > 0
+    # Fallback: if Bs filter returns nothing or query errored, try without filter
+    if not got_rows:
+        q2 = """query($efoId: String!) {
+          disease(efoId: $efoId) {
+            name
+            associatedTargets(page: {size: 500, index: 0}) {
+              rows {
+                target { id approvedSymbol }
+                score
+                datatypeScores { id score }
+                datasourceScores { id score }
               }
-            }"""
-            result = graphql_query(q2, {"efoId": efo_id})
-            if "data" in result and result["data"].get("disease"):
-                rows = result["data"]["disease"]["associatedTargets"]["rows"]
-                matched = [r for r in rows if r["target"]["id"] == ensembl_id]
-                result["data"]["disease"]["associatedTargets"]["rows"] = matched
+            }
+          }
+        }"""
+        result2 = graphql_query(q2, {"efoId": efo_id})
+        if "data" in result2 and result2["data"].get("disease"):
+            rows = result2["data"]["disease"]["associatedTargets"]["rows"]
+            matched = [r for r in rows if r["target"]["id"] == ensembl_id]
+            result2["data"]["disease"]["associatedTargets"]["rows"] = matched
+            result = result2
     return result
 
 
@@ -157,7 +180,7 @@ def score_clinical(assoc_data: dict, drugs_data: dict, efo_id: str) -> tuple[int
                 drug_names.append(drug_name)
         n_total = dacc.get("count", len(drug_names))
         if drug_names:
-            reasons.append(f"{n_total} drug(s): {', '.join(drug_names[:3])} (max stage: {max_phase})")
+            reasons.append(f"{n_total} drug(s), max phase {max_phase}")
 
     # Check genetic association from association data
     genetic_score = 0
@@ -165,10 +188,10 @@ def score_clinical(assoc_data: dict, drugs_data: dict, efo_id: str) -> tuple[int
         rows = assoc_data["data"]["disease"]["associatedTargets"]["rows"]
         if rows:
             for ds in rows[0].get("datatypeScores", []):
-                cid = ds["componentId"].lower()
+                cid = ds["id"].lower()
                 if "genetic" in cid or "somatic" in cid:
                     genetic_score = max(genetic_score, ds["score"])
-                    reasons.append(f"Genetic score ({ds['componentId']}): {ds['score']:.2f}")
+                    reasons.append(f"Genetic score ({ds['id']}): {ds['score']:.2f}")
 
     if max_phase >= 4:
         return 5, "; ".join(reasons) or "Approved drug"
@@ -188,16 +211,22 @@ def score_druggability(target_data: dict, drugs_data: dict) -> tuple[int, str]:
     tract_sm = False
     tract_ab = False
 
+    sm_labels = []
+    ab_labels = []
     if target_data.get("data", {}).get("target"):
         t = target_data["data"]["target"]
         for tr in t.get("tractability", []):
             if tr.get("value"):
                 if tr["modality"] == "SM":
                     tract_sm = True
-                    reasons.append(f"SM: {tr['label']}")
+                    sm_labels.append(tr['label'])
                 elif tr["modality"] == "AB":
                     tract_ab = True
-                    reasons.append(f"AB: {tr['label']}")
+                    ab_labels.append(tr['label'])
+    if sm_labels:
+        reasons.append(f"SM({len(sm_labels)}): {', '.join(sm_labels[:2])}")
+    if ab_labels:
+        reasons.append(f"AB({len(ab_labels)}): {', '.join(ab_labels[:2])}")
 
     stage_map = {"Phase IV": 4, "Approved": 4, "Phase III": 3, "Phase II": 2, "Phase I": 1, "Phase I (Early)": 0.5}
     has_approved = False
@@ -236,14 +265,8 @@ def score_pathway(target_data: dict, assoc_data: dict) -> tuple[int, str]:
         pathways = t.get("pathways") or []
         pathway_count = len(pathways)
         if pathway_count > 0:
-            top = [p.get("pathway", "") for p in pathways[:3]]
-            reasons.append(f"{pathway_count} pathway(s): {', '.join(top)}")
-        funcs = t.get("functionDescriptions") or []
-        if funcs:
-            reasons.append(f"Function: {funcs[0][:80]}...")
-        locs = t.get("subcellularLocations") or []
-        if locs:
-            reasons.append(f"Location: {', '.join(l['location'] for l in locs[:3])}")
+            top = [p.get("pathway", "")[:40] for p in pathways[:2]]
+            reasons.append(f"{pathway_count} pw: {'; '.join(top)}")
 
     lit_score = 0
     expr_score = 0
@@ -251,7 +274,7 @@ def score_pathway(target_data: dict, assoc_data: dict) -> tuple[int, str]:
         rows = assoc_data["data"]["disease"]["associatedTargets"]["rows"]
         if rows:
             for ds in rows[0].get("datatypeScores", []):
-                cid = ds["componentId"].lower()
+                cid = ds["id"].lower()
                 if "literature" in cid:
                     lit_score = ds["score"]
                     reasons.append(f"Literature: {ds['score']:.2f}")
@@ -298,9 +321,9 @@ def validate(targets: list[str], diseases: list[str]) -> dict:
             hits = r.get("data", {}).get("search", {}).get("hits", [])
             if hits:
                 resolved_targets[t] = hits[0]["id"]
-                print(f"  Resolved {t} → {hits[0]['id']} ({hits[0].get('name', '')})")
+                print(f"  {t} → {hits[0]['id']}")
             else:
-                print(f"  WARNING: Could not resolve target '{t}'")
+                print(f"  WARN: target '{t}' not found")
 
     # Resolve diseases
     resolved_diseases = {}
@@ -312,15 +335,15 @@ def validate(targets: list[str], diseases: list[str]) -> dict:
             hits = r.get("data", {}).get("search", {}).get("hits", [])
             if hits:
                 resolved_diseases[d] = hits[0]["id"]
-                print(f"  Resolved {d} → {hits[0]['id']} ({hits[0].get('name', '')})")
+                print(f"  {d} → {hits[0]['id']}")
             else:
-                print(f"  WARNING: Could not resolve disease '{d}'")
+                print(f"  WARN: disease '{d}' not found")
 
     raw_data = {}
     for t_name, t_id in resolved_targets.items():
         for d_name, d_id in resolved_diseases.items():
             pair_key = f"{t_name}|{d_name}"
-            print(f"\n  Scoring {t_name} × {d_name}...")
+            print(f"  scoring {t_name}×{d_name}")
 
             assoc = get_association(t_id, d_id)
             target_info = get_target_info(t_id)
@@ -394,14 +417,13 @@ def format_markdown_table(results):
 def format_narrative(results):
     sections = []
     for r in results:
-        sections.append(f"""### {r['target']} × {r['disease']}
-**Composite Score: {r['composite']} ({r['confidence']} confidence)**
-
-- **Clinical ({r['clinical']}/5):** {r['clinical_reason']}
-- **Druggability ({r['druggability']}/5):** {r['druggability_reason']}
-- **Pathway ({r['pathway']}/5):** {r['pathway_reason']}
-- **Safety ({r['safety']}/5):** {r['safety_reason']}
-""")
+        sections.append(
+            f"**{r['target']}×{r['disease']}** C{r['clinical']} D{r['druggability']} P{r['pathway']} S{r['safety']} → {r['composite']} ({r['confidence']})\n"
+            f"  Clin: {r['clinical_reason'][:120]}\n"
+            f"  Drug: {r['druggability_reason'][:120]}\n"
+            f"  Path: {r['pathway_reason'][:120]}\n"
+            f"  Safe: {r['safety_reason'][:80]}"
+        )
     return "\n".join(sections)
 
 
@@ -412,6 +434,7 @@ def generate_html(results, disease_name):
             "name": r["target"],
             "fullName": r.get("full_name", ""),
             "ensemblId": r.get("target_id", ""),
+            "disease": r.get("disease", ""),
             "context": r.get("context", ""),
             "scores": {
                 "genetic": min(r["clinical"], 5),
@@ -448,9 +471,11 @@ def generate_html(results, disease_name):
 
     targets_json = json.dumps(targets_for_js, indent=2)
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-    n_targets = len(results)
+    unique_targets = list(dict.fromkeys(r["target"] for r in results))
+    unique_diseases = list(dict.fromkeys(r["disease"] for r in results))
     subtitle = (
-        f"{n_targets} targets scored against {disease_name} across 7 evidence sub-dimensions. "
+        f"{len(unique_targets)} target(s) ({', '.join(unique_targets)}) scored against "
+        f"{len(unique_diseases)} disease(s) ({', '.join(unique_diseases)}) across 7 evidence sub-dimensions. "
         f"Scores 0-5 per dimension. Weighted composite determines ranking. "
         f"Safety score of 0 = veto. Hover scores for details. Click target names for notes."
     )
@@ -710,27 +735,34 @@ render();
 </html>"""
 
 
+def _make_slug(results):
+    targets = list(dict.fromkeys(r["target"] for r in results))
+    diseases = list(dict.fromkeys(r["disease"] for r in results))
+    def slugify(s): return s.lower().replace(" ", "_").replace("'", "")
+    return f"{'_'.join(slugify(t) for t in targets)}_vs_{'_'.join(slugify(d) for d in diseases)}"
+
+
 def save_results(validation, output_dir="results"):
     os.makedirs(output_dir, exist_ok=True)
     results = validation["results"]
+    slug = _make_slug(results) if results else "unknown"
 
-    with open(f"{output_dir}/validation_report.md", "w") as f:
+    with open(f"{output_dir}/validation_{slug}.md", "w") as f:
         f.write(f"# Target Validation Report\n**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M')}\n\n")
         f.write(f"## Summary\n\n{format_markdown_table(results)}\n\n## Details\n\n{format_narrative(results)}\n")
 
     if results:
         fieldnames = [k for k in results[0].keys() if k != "full_name" and k != "context"]
-        with open(f"{output_dir}/scores.csv", "w", newline="") as f:
+        with open(f"{output_dir}/scores_{slug}.csv", "w", newline="") as f:
             w = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
             w.writeheader()
             w.writerows(results)
 
-    with open(f"{output_dir}/raw_data.json", "w") as f:
+    with open(f"{output_dir}/raw_data_{slug}.json", "w") as f:
         json.dump(validation["raw_data"], f, indent=2, default=str)
 
-    disease_name = results[0]["disease"] if results else "unknown"
-    html = generate_html(results, disease_name)
-    slug = disease_name.lower().replace(" ", "_").replace("'", "")
+    disease_label = ", ".join(dict.fromkeys(r["disease"] for r in results)) if results else "unknown"
+    html = generate_html(results, disease_label)
     html_path = f"{output_dir}/validation_{slug}.html"
     with open(html_path, "w") as f:
         f.write(html)
@@ -758,6 +790,41 @@ def main():
         print(json.dumps(get_target_info(sys.argv[2]), indent=2))
     elif cmd == "known-drugs" and len(sys.argv) >= 3:
         print(json.dumps(get_known_drugs(sys.argv[2]), indent=2))
+    elif cmd == "find-targets" and len(sys.argv) >= 3:
+        disease_query = " ".join(sys.argv[2:])
+        top_n = 10
+        # Check if last arg is a number (top_n)
+        if sys.argv[-1].isdigit():
+            top_n = int(sys.argv[-1])
+            disease_query = " ".join(sys.argv[2:-1])
+        # Resolve disease
+        efo_id = disease_query
+        if not any(disease_query.startswith(p) for p in ["EFO_", "MONDO_", "HP_", "Orphanet_"]):
+            r = search_disease(disease_query)
+            hits = r.get("data", {}).get("search", {}).get("hits", [])
+            if hits:
+                efo_id = hits[0]["id"]
+                print(f"  {disease_query} → {efo_id}")
+            else:
+                print(f"  WARN: disease '{disease_query}' not found")
+                sys.exit(1)
+        result = find_targets_for_disease(efo_id, top_n)
+        disease_data = result.get("data", {}).get("disease")
+        if not disease_data:
+            print("  No data returned for this disease.")
+            sys.exit(1)
+        rows = disease_data["associatedTargets"]["rows"]
+        total = disease_data["associatedTargets"]["count"]
+        print(f"  {disease_data['name']}: {total} associated targets (showing top {len(rows)})\n")
+        print(f"| Rank | Symbol | Name | Score | Top datatype |")
+        print(f"|------|--------|------|:-----:|--------------|")
+        for i, row in enumerate(rows, 1):
+            t = row["target"]
+            score = row["score"]
+            dts = sorted(row.get("datatypeScores", []), key=lambda d: d["score"], reverse=True)
+            top_dt = f"{dts[0]['id']} ({dts[0]['score']:.2f})" if dts else "—"
+            name = (t.get("approvedName") or "")[:40]
+            print(f"| {i} | **{t['approvedSymbol']}** | {name} | {score:.3f} | {top_dt} |")
     elif cmd == "validate" and len(sys.argv) >= 4:
         targets = [t.strip() for t in sys.argv[2].split(",")]
         diseases = [d.strip() for d in sys.argv[3].split(",")]
@@ -802,13 +869,8 @@ def main():
         with open(out_path, "w") as f:
             f.write(html)
         print(f"\n  Saved to {out_path}")
-        # Also print JSON summary
         for sym, data in all_pathway_data.items():
-            print(f"\n  {sym} ({data['fullName']}):")
-            for p in data["pathways"][:10]:
-                print(f"    - {p['term']} ({p['id']})")
-            if len(data["pathways"]) > 10:
-                print(f"    ... and {len(data['pathways']) - 10} more")
+            print(f"  {sym}: {len(data['pathways'])} pathways")
     else:
         print(__doc__)
         sys.exit(1)

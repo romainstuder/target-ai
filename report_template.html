@@ -188,7 +188,7 @@ function render() {
   ranked.forEach((t, i) => {
     const th = document.createElement("th");
     th.className = "target-head" + (t.vetoed ? " vetoed" : "") + (selectedTarget === i ? " selected" : "");
-    th.innerHTML = `<div class="target-name">${t.name}</div><div class="target-context">${(t.context || "").slice(0, 55)}${(t.context || "").length > 55 ? "…" : ""}</div>`;
+    th.innerHTML = `<div class="target-name">${t.name}</div><div class="target-context">${t.disease || ""}</div>`;
     th.onclick = () => { selectedTarget = selectedTarget === i ? null : i; render(); };
     headerRow.appendChild(th);
   });
