@@ -90,7 +90,7 @@ def get_known_drugs(ensembl_id: str) -> dict:
             id
             maxClinicalStage
             drug { id name drugType }
-            diseases { id name }
+            diseases { disease { id name } }
           }
         }
       }
@@ -143,8 +143,18 @@ def get_association(ensembl_id: str, efo_id: str) -> dict:
 def score_clinical(assoc_data: dict, drugs_data: dict, efo_id: str) -> tuple[int, str]:
     reasons = []
 
-    # Map maxClinicalStage strings to numeric phases
+    # Map maxClinicalStage strings to numeric phases (handles both old and new API formats)
     stage_map = {
+        # New API format
+        "APPROVAL": 4,
+        "PHASE_4": 4,
+        "PHASE_3": 3,
+        "PHASE_2_3": 2.5,
+        "PHASE_2": 2,
+        "PHASE_1_2": 1.5,
+        "PHASE_1": 1,
+        "PHASE_0": 0.5,
+        # Legacy format
         "Phase IV": 4,
         "Approved": 4,
         "Phase III": 3,
