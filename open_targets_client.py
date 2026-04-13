@@ -122,12 +122,11 @@ def find_targets_for_disease(efo_id: str, top_n: int = 10) -> dict:
 
 
 def get_association(ensembl_id: str, efo_id: str) -> dict:
-    q = """query($efoId: String!, $ensemblIds: [String!]) {
-      disease(efoId: $efoId) {
-        name
-        associatedTargets(Bs: $ensemblIds, page: {size: 1, index: 0}) {
+    q = """query($ensemblId: String!, $efoId: String!) {
+      target(ensemblId: $ensemblId) {
+        associatedDiseases(efoIds: [$efoId], page: {size: 1, index: 0}) {
           rows {
-            target { id approvedSymbol }
+            disease { id name }
             score
             datatypeScores { id score }
             datasourceScores { id score }
@@ -135,34 +134,7 @@ def get_association(ensembl_id: str, efo_id: str) -> dict:
         }
       }
     }"""
-    result = graphql_query(q, {"efoId": efo_id, "ensemblIds": [ensembl_id]})
-    # Check if we got valid rows
-    got_rows = False
-    if "data" in result and result["data"].get("disease"):
-        rows = result["data"]["disease"]["associatedTargets"]["rows"]
-        got_rows = len(rows) > 0
-    # Fallback: if Bs filter returns nothing or query errored, try without filter
-    if not got_rows:
-        q2 = """query($efoId: String!) {
-          disease(efoId: $efoId) {
-            name
-            associatedTargets(page: {size: 500, index: 0}) {
-              rows {
-                target { id approvedSymbol }
-                score
-                datatypeScores { id score }
-                datasourceScores { id score }
-              }
-            }
-          }
-        }"""
-        result2 = graphql_query(q2, {"efoId": efo_id})
-        if "data" in result2 and result2["data"].get("disease"):
-            rows = result2["data"]["disease"]["associatedTargets"]["rows"]
-            matched = [r for r in rows if r["target"]["id"] == ensembl_id]
-            result2["data"]["disease"]["associatedTargets"]["rows"] = matched
-            result = result2
-    return result
+    return graphql_query(q, {"ensemblId": ensembl_id, "efoId": efo_id})
 
 
 # ── Scoring Logic ──────────────────────────────────────────────────────────
@@ -200,8 +172,8 @@ def score_clinical(assoc_data: dict, drugs_data: dict, efo_id: str) -> tuple[int
 
     # Check genetic association from association data
     genetic_score = 0
-    if assoc_data.get("data", {}).get("disease"):
-        rows = assoc_data["data"]["disease"]["associatedTargets"]["rows"]
+    if assoc_data.get("data", {}).get("target"):
+        rows = assoc_data["data"]["target"]["associatedDiseases"]["rows"]
         if rows:
             for ds in rows[0].get("datatypeScores", []):
                 cid = ds["id"].lower()
@@ -295,8 +267,8 @@ def score_pathway(target_data: dict, assoc_data: dict) -> tuple[int, str]:
 
     lit_score = 0
     expr_score = 0
-    if assoc_data.get("data", {}).get("disease"):
-        rows = assoc_data["data"]["disease"]["associatedTargets"]["rows"]
+    if assoc_data.get("data", {}).get("target"):
+        rows = assoc_data["data"]["target"]["associatedDiseases"]["rows"]
         if rows:
             for ds in rows[0].get("datatypeScores", []):
                 cid = ds["id"].lower()
@@ -400,8 +372,10 @@ def validate(targets: list[str], diseases: list[str]) -> dict:
                 context = funcs[0][:80] if funcs else ""
 
             disease_name = d_name
-            if assoc.get("data", {}).get("disease"):
-                disease_name = assoc["data"]["disease"].get("name", d_name)
+            if assoc.get("data", {}).get("target"):
+                rows = assoc["data"]["target"]["associatedDiseases"]["rows"]
+                if rows:
+                    disease_name = rows[0]["disease"].get("name", d_name)
 
             # Safety score
             safety = 5
