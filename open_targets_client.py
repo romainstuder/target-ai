@@ -163,22 +163,37 @@ def score_clinical(assoc_data: dict, drugs_data: dict, efo_id: str) -> tuple[int
         "Phase I (Early)": 0.5,
     }
 
-    max_phase = 0
-    drug_names = []
+    indication_max = 0
+    global_max = 0
+    indication_names = []
+    global_names = []
     dacc = drugs_data.get("data", {}).get("target", {}).get("drugAndClinicalCandidates")
     if dacc:
         for row in dacc.get("rows", []):
             stage = row.get("maxClinicalStage", "")
             ph = stage_map.get(stage, 0)
-            drug_obj = row.get("drug") or {}
-            drug_name = drug_obj.get("name", "unknown")
-            if ph > max_phase:
-                max_phase = ph
-            if drug_name not in drug_names and len(drug_names) < 5:
-                drug_names.append(drug_name)
-        n_total = dacc.get("count", len(drug_names))
-        if drug_names:
-            reasons.append(f"{n_total} drug(s), max phase {max_phase}")
+            drug_name = (row.get("drug") or {}).get("name", "unknown")
+            disease_ids = {d["disease"]["id"] for d in (row.get("diseases") or []) if d.get("disease")}
+            if efo_id in disease_ids:
+                indication_max = max(indication_max, ph)
+                if drug_name not in indication_names and len(indication_names) < 5:
+                    indication_names.append(drug_name)
+            else:
+                global_max = max(global_max, ph)
+                if drug_name not in global_names and len(global_names) < 5:
+                    global_names.append(drug_name)
+        n_total = dacc.get("count", 0)
+        if indication_names:
+            reasons.append(
+                f"{n_total} drug(s) incl. {', '.join(indication_names[:2])} (this indication), max phase {indication_max}"
+            )
+        elif global_names:
+            reasons.append(
+                f"{n_total} drug(s) incl. {', '.join(global_names[:2])} (other indications), max phase {global_max}"
+            )
+
+    # Off-indication drugs count as evidence but are capped at phase 2
+    effective_phase = indication_max if indication_max > 0 else min(global_max, 2)
 
     # Check genetic association from association data
     genetic_score = 0
@@ -191,11 +206,11 @@ def score_clinical(assoc_data: dict, drugs_data: dict, efo_id: str) -> tuple[int
                     genetic_score = max(genetic_score, ds["score"])
                     reasons.append(f"Genetic score ({ds['id']}): {ds['score']:.2f}")
 
-    if max_phase >= 4:
-        return 5, "; ".join(reasons) or "Approved drug"
-    elif max_phase == 3 or genetic_score > 0.5:
+    if effective_phase >= 4:
+        return 5, "; ".join(reasons) or "Approved drug for this indication"
+    elif effective_phase == 3 or genetic_score > 0.5:
         return 4, "; ".join(reasons)
-    elif max_phase >= 1 or genetic_score > 0.3:
+    elif effective_phase >= 1 or genetic_score > 0.3:
         return 3, "; ".join(reasons)
     elif genetic_score > 0.1:
         return 2, "; ".join(reasons)
