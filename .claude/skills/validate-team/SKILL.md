@@ -46,7 +46,7 @@ Given `$ARGUMENTS`:
    on. Don't guess.
 
 3. **Fan out, all in a single message so they run concurrently:**
-   - Bash: `python3 open_targets_client.py validate "ENSG…,ENSG…" "EFO_…,EFO_…"`
+   - Bash: `uv run python open_targets_client.py validate "ENSG…,ENSG…" "EFO_…,EFO_…"`
      (pass the **resolved IDs** so the script and the agents score the same entities)
    - Spawn `clinical-evidence`, `druggability-evidence`, `biology-evidence` and
      `landscape-scout`. Give each the same brief:
@@ -74,7 +74,7 @@ Given `$ARGUMENTS`:
 
 ## Rules
 
-- Every rule in `CLAUDE.md` still applies: no curl, no `python3 -c`, single-line
+- Every rule in `CLAUDE.md` still applies: no curl, no `python -c`, single-line
   script calls.
 - Don't do evidence collection in the main session. That's what the agents are for,
   and doing it here defeats the context isolation.

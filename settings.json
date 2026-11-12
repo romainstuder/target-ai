@@ -4,7 +4,7 @@
       "Read",
       "Write",
       "Edit",
-      "Bash(python3 open_targets_client.py *)",
+      "Bash(uv run python open_targets_client.py *)",
       "mcp__open-targets-platform__*",
       "Bash(cat *)",
       "Bash(ls *)",
@@ -23,7 +23,8 @@
     "deny": [
       "Bash(curl *)",
       "Bash(python3 -c *)",
-      "Bash(python -c *)"
+      "Bash(python -c *)",
+      "Bash(uv run python -c *)"
     ]
   }
 }

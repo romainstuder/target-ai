@@ -107,10 +107,10 @@ deterministic, reproducible, file-based output:
 
 ```bash
 # Full validation — scores every target × disease pair and writes results/
-python3 open_targets_client.py validate "BRAF,KRAS" "cutaneous melanoma,non-small cell lung carcinoma"
+uv run python open_targets_client.py validate "BRAF,KRAS" "cutaneous melanoma,non-small cell lung carcinoma"
 
 # Pathway visualization — interactive Reactome map
-python3 open_targets_client.py pathways "PCSK9,HMGCR,ANGPTL3"
+uv run python open_targets_client.py pathways "PCSK9,HMGCR,ANGPTL3"
 ```
 
 Targets and diseases can be given as names or as IDs (`ENSG…`, `EFO_…`, `MONDO_…`).
