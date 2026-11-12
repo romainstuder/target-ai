@@ -25,7 +25,7 @@ scoring script to give an independent, evidence-cited second opinion. See
 
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) installed (`npm install -g @anthropic-ai/claude-code`)
 - An Anthropic API key or Claude Pro/Max subscription
-- Python 3.10+ (for the helper script; Claude Code can also query APIs directly)
+- Python 3.14+ (for the helper script; Claude Code can also query APIs directly)
 - No additional API keys needed — Open Targets Platform is free and open
 
 ### Setup
