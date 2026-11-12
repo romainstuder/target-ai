@@ -52,10 +52,10 @@ Given `$ARGUMENTS`:
 7. **Generate HTML report.** Run the Python script to produce the interactive HTML matrix:
 
    ```bash
-   python open_targets_client.py validate "TARGET" "DISEASE1,DISEASE2"
+   uv run python open_targets_client.py validate "TARGET" "DISEASE1,DISEASE2"
    ```
 
-   This creates `results/validation_{disease}.html` — the interactive scoring matrix.
+   This creates `results/validation_{slug}.html` — the interactive scoring matrix.
    Tell the user to open it in their browser.
 
 8. **Save** narrative to `results/{TARGET}_deep_dive.md` alongside the HTML.

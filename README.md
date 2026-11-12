@@ -32,8 +32,8 @@ scoring script to give an independent, evidence-cited second opinion. See
 
 ```bash
 # Clone or download this project
-git clone https://github.com/romainstuder/target-ai target-validation-tool
-cd target-validation-tool
+git clone https://github.com/romainstuder/target-ai
+cd target-ai
 
 # Start Claude Code
 claude

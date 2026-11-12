@@ -37,7 +37,7 @@ uv run python open_targets_client.py validate "BRAF,KRAS" "melanoma"
 uv run python open_targets_client.py pathways "PCSK9,HMGCR,ANGPTL3"
 ```
 
-Output is written to `results/`. Open `results/validation_{disease}.html` in a browser.
+Output is written to `results/`. Open `results/validation_{slug}.html` in a browser.
 
 ## Development setup
 

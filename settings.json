@@ -5,6 +5,9 @@
       "Write",
       "Edit",
       "Bash(uv run python open_targets_client.py *)",
+      "Bash(uv run ruff *)",
+      "Bash(uv run ty *)",
+      "Bash(uv run pytest *)",
       "mcp__open-targets-platform__*",
       "Bash(cat *)",
       "Bash(ls *)",
@@ -16,7 +19,6 @@
       "Bash(wc *)",
       "Bash(grep *)",
       "Bash(find *)",
-      "Bash(pip3 install *)",
       "WebFetch",
       "WebSearch"
     ],

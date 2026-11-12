@@ -102,7 +102,7 @@ After the script runs, the compact output already contains everything needed. Do
 reformat, expand, or re-explain the script output — it wastes tokens. Just:
 
 1. Let the script output speak for itself (table + compact narrative are already printed)
-2. Tell the user to open `results/validation_{disease}.html` in their browser
+2. Tell the user to open `results/validation_{slug}.html` in their browser
 3. Only add a brief comment if there is something surprising or a clear gap/risk
    - Suggested next steps
 
@@ -170,12 +170,12 @@ Use it when the user asks for a team / multi-agent / second-opinion validation. 
 
 Every validation run produces four files in `results/`:
 
-| File                        | Description                                                                  |
-| --------------------------- | ---------------------------------------------------------------------------- |
-| `validation_{disease}.html` | **★ Primary deliverable** — interactive HTML scoring matrix, open in browser |
-| `validation_report.md`      | Markdown report with tables and narrative                                    |
-| `scores.csv`                | Machine-readable CSV for downstream analysis                                 |
-| `raw_data.json`             | Raw API responses for reproducibility                                        |
+| File                     | Description                                                                  |
+| ------------------------ | ---------------------------------------------------------------------------- |
+| `validation_{slug}.html` | **★ Primary deliverable** — interactive HTML scoring matrix, open in browser |
+| `validation_{slug}.md`   | Markdown report with tables and narrative                                    |
+| `scores_{slug}.csv`      | Machine-readable CSV for downstream analysis                                 |
+| `raw_data_{slug}.json`   | Raw API responses for reproducibility                                        |
 
 **Always tell the user to open the HTML file** — it is the primary deliverable.
 
