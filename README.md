@@ -25,15 +25,15 @@ scoring script to give an independent, evidence-cited second opinion. See
 
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) installed (`npm install -g @anthropic-ai/claude-code`)
 - An Anthropic API key or Claude Pro/Max subscription
-- Python 3.10+ (for the helper script; Claude Code can also query APIs directly)
+- Python 3.14+ (for the helper script; Claude Code can also query APIs directly)
 - No additional API keys needed — Open Targets Platform is free and open
 
 ### Setup
 
 ```bash
 # Clone or download this project
-git clone https://github.com/romainstuder/target-ai target-validation-tool
-cd target-validation-tool
+git clone https://github.com/romainstuder/target-ai
+cd target-ai
 
 # Start Claude Code
 claude
@@ -107,10 +107,10 @@ deterministic, reproducible, file-based output:
 
 ```bash
 # Full validation — scores every target × disease pair and writes results/
-python3 open_targets_client.py validate "BRAF,KRAS" "cutaneous melanoma,non-small cell lung carcinoma"
+uv run python open_targets_client.py validate "BRAF,KRAS" "cutaneous melanoma,non-small cell lung carcinoma"
 
 # Pathway visualization — interactive Reactome map
-python3 open_targets_client.py pathways "PCSK9,HMGCR,ANGPTL3"
+uv run python open_targets_client.py pathways "PCSK9,HMGCR,ANGPTL3"
 ```
 
 Targets and diseases can be given as names or as IDs (`ENSG…`, `EFO_…`, `MONDO_…`).

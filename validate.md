@@ -35,14 +35,14 @@ Given the user's input in `$ARGUMENTS`:
 6. **Generate outputs.** Run the Python script to produce all files:
 
    ```bash
-   python open_targets_client.py validate "TARGET1,TARGET2" "DISEASE"
+   uv run python open_targets_client.py validate "TARGET1,TARGET2" "DISEASE"
    ```
 
    This creates four files in `results/`:
-   - `validation_report.md` — Markdown report
-   - `scores.csv` — CSV for downstream analysis
-   - `raw_data.json` — Raw API data
-   - `validation_{disease}.html` — **Interactive HTML scoring matrix**
+   - `validation_{slug}.md` — Markdown report
+   - `scores_{slug}.csv` — CSV for downstream analysis
+   - `raw_data_{slug}.json` — Raw API data
+   - `validation_{slug}.html` — **Interactive HTML scoring matrix**
 
    The HTML file is the primary deliverable. Tell the user to open it in their browser.
 

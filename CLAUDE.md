@@ -22,7 +22,7 @@ never via curl or hand-rolled HTTP:
 
 ## CRITICAL: How to Execute
 
-**NEVER use `curl`. NEVER run `python3 -c "..."` inline code. NEVER hand-write an HTTP
+**NEVER use `curl`. NEVER run `python3 -c "..."` or `uv run python -c "..."` inline code. NEVER hand-write an HTTP
 request.** If you need Open Targets data, use one of the two paths below.
 
 ### Path 1 — MCP tools, for lookups and exploration
@@ -47,8 +47,8 @@ deep-dive use case).
 ### Path 2 — `open_targets_client.py`, for scored & saved output
 
 ```bash
-python3 open_targets_client.py validate "TARGET1,TARGET2" "DISEASE1,DISEASE2"
-python3 open_targets_client.py pathways "PCSK9,HMGCR,ANGPTL3"
+uv run python open_targets_client.py validate "TARGET1,TARGET2" "DISEASE1,DISEASE2"
+uv run python open_targets_client.py pathways "PCSK9,HMGCR,ANGPTL3"
 ```
 
 `validate` resolves every target/disease, fetches evidence, applies the fixed 0–5 rubric
@@ -56,6 +56,9 @@ below to each pair, computes the weighted composite, and writes all four files t
 `results/`. `pathways` builds the interactive Reactome pathway map at
 `results/pathways.html`. Both commands do their own resolution and fetching
 internally — call them directly, don't pre-fetch their inputs via MCP first.
+
+The script is stdlib-only, so there is nothing to install to run it. Python tooling rules
+(uv, ruff, ty, pytest) live in `.claude/rules/python.md`.
 
 **Rule of thumb:** the user wants a scored/ranked/saved deliverable → run the script.
 The user wants to explore, ask a one-off question, or needs a field the script doesn't
@@ -82,7 +85,7 @@ If the user gives a broad term, suggest a more specific one. Examples:
 ### Step 2 — Run the Python Script
 
 ```bash
-python3 open_targets_client.py validate "BRAF,KRAS" "melanoma"
+uv run python open_targets_client.py validate "BRAF,KRAS" "melanoma"
 ```
 
 The script automatically:
@@ -99,7 +102,7 @@ After the script runs, the compact output already contains everything needed. Do
 reformat, expand, or re-explain the script output — it wastes tokens. Just:
 
 1. Let the script output speak for itself (table + compact narrative are already printed)
-2. Tell the user to open `results/validation_{disease}.html` in their browser
+2. Tell the user to open `results/validation_{slug}.html` in their browser
 3. Only add a brief comment if there is something surprising or a clear gap/risk
    - Suggested next steps
 
@@ -167,35 +170,35 @@ Use it when the user asks for a team / multi-agent / second-opinion validation. 
 
 Every validation run produces four files in `results/`:
 
-| File                        | Description                                                                  |
-| --------------------------- | ---------------------------------------------------------------------------- |
-| `validation_{disease}.html` | **★ Primary deliverable** — interactive HTML scoring matrix, open in browser |
-| `validation_report.md`      | Markdown report with tables and narrative                                    |
-| `scores.csv`                | Machine-readable CSV for downstream analysis                                 |
-| `raw_data.json`             | Raw API responses for reproducibility                                        |
+| File                     | Description                                                                  |
+| ------------------------ | ---------------------------------------------------------------------------- |
+| `validation_{slug}.html` | **★ Primary deliverable** — interactive HTML scoring matrix, open in browser |
+| `validation_{slug}.md`   | Markdown report with tables and narrative                                    |
+| `scores_{slug}.csv`      | Machine-readable CSV for downstream analysis                                 |
+| `raw_data_{slug}.json`   | Raw API responses for reproducibility                                        |
 
 **Always tell the user to open the HTML file** — it is the primary deliverable.
 
 ## Important Guidelines
 
-- **Only two data paths:** the `open-targets-platform` MCP tools, or `python3 open_targets_client.py validate` / `pathways`. No curl. No `python3 -c`. No inline scripts. No multiline bash.
+- **Only two data paths:** the `open-targets-platform` MCP tools, or `uv run python open_targets_client.py validate` / `pathways`. No curl. No `python -c` inline code. No inline scripts. No multiline bash.
 - **If the script returns zeros or errors**, tell the user what happened — don't try to debug the API yourself with introspection queries (use the MCP schema tools for that instead, in front of the user).
 - **Be transparent about missing data.** If a query returns no association, say so — don't inflate scores.
 - **Use web search** only for information neither the API nor MCP tools can provide (very recent trial results, patents, competitive intelligence).
 - **Never fabricate evidence.** If unsure about a score, assign the lower value and flag it.
-- **All script invocations must be single-line** calls to `python3 open_targets_client.py`.
+- **All script invocations must be single-line** calls to `uv run python open_targets_client.py`.
 
 ## Quick-Start Examples
 
 ```
 User: "Validate BRAF and KRAS for melanoma"
-→ python3 open_targets_client.py validate "BRAF,KRAS" "melanoma"
+→ uv run python open_targets_client.py validate "BRAF,KRAS" "melanoma"
 
 User: "Score PCSK9, HMGCR, ANGPTL3 against cardiovascular disease"
-→ python3 open_targets_client.py validate "PCSK9,HMGCR,ANGPTL3" "cardiovascular disease"
+→ uv run python open_targets_client.py validate "PCSK9,HMGCR,ANGPTL3" "cardiovascular disease"
 
 User: "Assess CDK4 and CDK6 as targets for breast cancer"
-→ python3 open_targets_client.py validate "CDK4,CDK6" "breast cancer"
+→ uv run python open_targets_client.py validate "CDK4,CDK6" "breast cancer"
 ```
 
 ## If /slash-commands Don't Work
@@ -210,7 +213,7 @@ Validate PCSK9 against cardiovascular disease
 You (Claude) should recognize this from CLAUDE.md instructions and run:
 
 ```bash
-python3 open_targets_client.py validate "PCSK9" "cardiovascular disease"
+uv run python open_targets_client.py validate "PCSK9" "cardiovascular disease"
 ```
 
 The CLAUDE.md instructions are always loaded regardless of skill detection issues.

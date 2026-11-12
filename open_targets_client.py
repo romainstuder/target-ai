@@ -8,8 +8,8 @@ instead of this script. This script only covers the two commands that need
 deterministic, reproducible scoring and produce files on disk:
 
 Usage:
-    python3 open_targets_client.py validate "BRAF,KRAS" "melanoma"
-    python3 open_targets_client.py pathways "PCSK9,HMGCR,ANGPTL3"
+    uv run python open_targets_client.py validate "BRAF,KRAS" "melanoma"
+    uv run python open_targets_client.py pathways "PCSK9,HMGCR,ANGPTL3"
 """
 
 import csv
