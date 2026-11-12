@@ -11,6 +11,7 @@ dev = [
     "pre-commit>=3.0.0",
     "pytest>=7.0.0",
     "ruff>=0.15.16",
+    "ty>=0.0.46",
 ]
 
 [tool.ruff]
